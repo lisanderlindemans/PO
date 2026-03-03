@@ -11,6 +11,7 @@ git pull
 Vergeet niet eerst git pull te doen, en op te slagen, vooraleer je git push kan doen.
 
 
+ll
 
 
 
