@@ -6,8 +6,12 @@ git add .
 git commit -m "update"    
 git push    
 
-Om elkaars wijzigingen te ontvangen doe    
-git pull
+Om elkaars wijzigingen te ontvangen doe  
+git pull  
+Vergeet niet eerst git pull te doen, en op te slagen, vooraleer je git push kan doen.
+
+
+
 
 
 
