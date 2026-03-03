@@ -10,11 +10,15 @@ Om elkaars wijzigingen te ontvangen doe
 git pull  
 Vergeet niet eerst git pull te doen, en op te slagen, vooraleer je git push kan doen.
 
+# TODO
 
+Aanpassingen nodig voor huidige website:
+- Timer start 1 seconde te laat
+- Rode torentjes kan je niet unselecten -> zorg misschien dat je het kan toggle-en
+- +1 per resterende seconde wordt niet gedaan
+- undo/redo hebben niet echt een nuttige functie?
 
-
-
-
-
-
-
+Toevoegingen nodig:
+- Je moet wagen handmatig kunnen overnemen
+- Positie en oriëntatie van auto moet kunnen gevolgd worden
+- Algoritme voor snelste route bepaling - **Xenne en Alexander**
