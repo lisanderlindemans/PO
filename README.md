@@ -27,7 +27,8 @@ Toevoegingen nodig:
 TODO
 - Je kan de rode torentjes wegdoen met redo en undo
 - +1 wordt wel gedaan, je moet gewoon voor alle torentjes iets aanduiden; Ook krijg je +100 als je op tijd bent
-- De toevoegingen zijn optioneel. Voor besturing heb je alvast een besturingsalgoritme nodig. Voor positie en orientatie heb je nog veel meer nodig, zoals een radarsysteem of zo.
+- De toevoegingen zijn optioneel. Voor besturing heb je alvast een besturingsalgoritme nodig. Voor positie en orientatie heb je nog veel meer nodig, zoals een radarsysteem of zo.  
 -de timer is gefixt
 
 - 
+
