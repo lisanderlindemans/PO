@@ -169,25 +169,32 @@ function setTimerRunning(running) {
   const isCurrentlyRunning = (timerHandle !== null);
 
   if (running && !isCurrentlyRunning) {
-    timerHandle = setInterval(() => {
-      // Timer moet lopen tijdens RUNNING en ESTOP (NOODSTOP stopt tijd NIET)
-      if (!(state === "RUNNING" || state === "ESTOP")) return;
 
-      remaining--;
-      if (remaining <= 0) {
-        remaining = 0;
-        state = "TIMEUP";
-        clearInterval(timerHandle);
-        timerHandle = null;
-      }
-      render();
-    }, 1000);
+    // 🔥 Onmiddellijke eerste tick
+    timerTick();
+
+    timerHandle = setInterval(timerTick, 1000);
   }
 
   if (!running && isCurrentlyRunning) {
     clearInterval(timerHandle);
     timerHandle = null;
   }
+}
+
+function timerTick() {
+  if (!(state === "RUNNING" || state === "ESTOP")) return;
+
+  remaining--;
+
+  if (remaining <= 0) {
+    remaining = 0;
+    state = "TIMEUP";
+    clearInterval(timerHandle);
+    timerHandle = null;
+  }
+
+  render();
 }
 
 function startGame() {
