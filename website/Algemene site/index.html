@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Robotwagen Webinterface</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <h1>Robotwagen Webinterface</h1>
+
+  <!--
+    ============================================================
+    CARD 1: Timer, Score, Status + Knoppenbalk
+    ============================================================
+  -->
+  <div class="card">
+    <div class="row">
+      <div class="box">
+        <div class="muted">Resterende tijd (4 min)</div>
+        <div class="big"><span id="timeLeft">240</span> s</div>
+      </div>
+
+      <div class="box">
+        <div class="muted">Totale score</div>
+        <div class="big"><span id="totalScore">0</span></div>
+      </div>
+
+      <div class="box">
+        <div class="muted">Status (spel)</div>
+
+        <!--
+          BELANGRIJK:
+          - In de opdracht-skeletcode moet id="status" gebruikt worden voor WebSocket.
+          - Daarom gebruiken we voor spelstatus id="gameStatus".
+        -->
+        <div class="big status" id="gameStatus">READY</div>
+
+        <div class="muted" id="statusHint">Start om timer te laten lopen.</div>
+
+        <!--
+          Opdracht-skelet verwacht:
+            <h3 id="status">Status: Disconnected</h3>
+          We plaatsen het in de layout (netjes) als badge.
+          id="status" MOET bestaan, anders werkt connect_socket() niet correct.
+        -->
+        <div class="muted" style="margin-top:8px;">
+          WebSocket:
+          <span class="wsBadge" id="status">Status: Disconnected</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Knoppen -->
+    <div style="margin-top:10px;">
+      <!-- GAME knoppen -->
+      <button id="startBtn">Start</button>
+      <button id="resetBtn">Reset</button>
+      <button id="undoBtn">Undo</button>
+      <button id="redoBtn">Redo</button>
+
+      <!-- NOODSTOP knop (timer blijft lopen volgens jouw regel) -->
+      <button id="noodBtn">NOODSTOP</button>
+
+      <!-- GARAGE knop -->
+      <button id="parkBtn">Parked in garage: NEE</button>
+
+      <!--
+        CONNECT knop:
+        - Dit is exact zoals in de opdracht: onclick="connect_socket()"
+        - De functie connect_socket() staat onderaan in de opdracht-code sectie.
+      -->
+      <button onclick="connect_socket()">Connect</button>
+
+      <div class="muted" style="margin-top:6px;">
+        Tip: verbind eerst met de wifi van de Pico, open dan deze pagina via het IP-adres, en klik daarna Connect.
+      </div>
+    </div>
+  </div>
+
+  <!--
+    ============================================================
+    CARD 2: Groene torentjes
+    ============================================================
+  -->
+  <div class="card">
+    <h3>Groene torentjes (4)</h3>
+    <div id="greensControls" class="grid"></div>
+    <div class="line"></div>
+    <div class="muted">
+      Accuraatheid: 100/70/50/40/20/0. Zijkant = halve punten. Op z'n kop = 0.
+    </div>
+  </div>
+
+  <!--
+    ============================================================
+    CARD 3: Rode torentjes + Garage details
+    ============================================================
+  -->
+  <div class="card">
+    <h3>Rode torentjes (5) + Garage</h3>
+    <div class="row">
+      <div class="box">
+        <div class="title">Raak rood torentje (uniek)</div>
+        <div id="redsControls"></div>
+        <div class="muted" style="margin-top:8px;">Elke unieke rood geraakt = -50.</div>
+      </div>
+
+      <div class="box">
+        <div class="title">Garage</div>
+        <div class="muted" style="margin-top:8px;">
+          Binnen tijd geparkeerd = +100. Als alle groen + garage binnen tijd: +1 per resterende seconde.
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="title">Details</div>
+        <div>Rood geraakt: <span id="redCount">0</span> → straf: <span id="redPenalty">0</span></div>
+        <div>Garage bonus: <span id="garageBonus">0</span></div>
+        <div>Tijdbonus: <span id="timeBonus">0</span></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--
+    ============================================================
+    JAVASCRIPT (LOGICA)
+    ============================================================
+    Alles staat in script.js:
+    Eerst: spel/score/timer logica
+    Daarna: OPDRACHT WebSocket-skelet (intact)
+  -->
+  <script src="script.js"></script>
+</body>
