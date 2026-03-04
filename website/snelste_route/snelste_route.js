@@ -2,7 +2,7 @@
 const CEL_GROOTTE = 30;
 const ROOSTER_GAP = 1;
 const KRUISPUNT_STAP = CEL_GROOTTE + ROOSTER_GAP; // 31px
-const KRUISPUNT_OFFSET = ROOSTER_GAP / 2;         // 0.5px (center of gap/padding line)
+const KRUISPUNT_OFFSET = ROOSTER_GAP / 2;         // 0.5px (center of gap line)
 
 function tekenRooster() {
     const cols = parseInt(document.getElementById('inputCols').value, 10);
@@ -20,11 +20,12 @@ function tekenRooster() {
         container.appendChild(div);
     }
 
-    // Add clickable intersection markers at every crossing of grid lines.
+    // Add clickable intersection markers at every inner crossing of grid lines.
+    // Outer-edge intersections are skipped since there is no outer border.
     // intersection (c, r) is centered at (c*STAP + OFFSET, r*STAP + OFFSET) px
-    // relative to the padding edge of the container.
-    for (let r = 0; r <= rows; r++) {
-        for (let c = 0; c <= cols; c++) {
+    // relative to the container.
+    for (let r = 1; r < rows; r++) {
+        for (let c = 1; c < cols; c++) {
             const marker = document.createElement('div');
             marker.classList.add('kruispunt');
             marker.style.left = `${c * KRUISPUNT_STAP + KRUISPUNT_OFFSET}px`;
