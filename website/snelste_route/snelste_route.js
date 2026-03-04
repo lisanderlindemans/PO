@@ -1,8 +1,7 @@
-// Step between intersections: cell width (30px, from .cel in CSS) + gap (1px)
 const CEL_GROOTTE = 30;
 const ROOSTER_GAP = 1;
-const KRUISPUNT_STAP = CEL_GROOTTE + ROOSTER_GAP; // 31px
-const KRUISPUNT_OFFSET = ROOSTER_GAP / 2;         // 0.5px (center of gap line)
+const KRUISPUNT_STAP = CEL_GROOTTE + ROOSTER_GAP;
+const KRUISPUNT_OFFSET = ROOSTER_GAP / 2;
 
 function tekenRooster() {
     const cols = parseInt(document.getElementById('inputCols').value, 10);
@@ -20,10 +19,6 @@ function tekenRooster() {
         container.appendChild(div);
     }
 
-    // Add clickable intersection markers at every inner crossing of grid lines.
-    // Outer-edge intersections are skipped since there is no outer border.
-    // intersection (c, r) is centered at (c*STAP + OFFSET, r*STAP + OFFSET) px
-    // relative to the container.
     for (let r = 1; r < rows; r++) {
         for (let c = 1; c < cols; c++) {
             const marker = document.createElement('div');
