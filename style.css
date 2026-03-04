@@ -1,0 +1,41 @@
+body { font-family: Arial, sans-serif; text-align:center; background:#f4f4f4; }
+h1 { margin-top: 22px; }
+.card { background:white; width:min(1100px, 95vw); margin: 14px auto; padding:16px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.08); text-align:left; }
+.row { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-start; }
+.box { flex:1; min-width: 260px; background:#fafafa; padding:12px; border-radius:10px; }
+.big { font-size: 28px; font-weight:700; }
+.status { font-weight:700; }
+.muted { color:#666; font-size: 13px; }
+.title { font-weight:700; margin-bottom:6px; }
+.grid { display:grid; grid-template-columns: 1fr; gap:10px; }
+.line { height:1px; background:#e6e6e6; margin:10px 0; }
+
+button {
+  padding:8px 12px; font-size:14px; margin:6px 6px 0 0;
+  cursor:pointer; border-radius:10px; border:1px solid #ddd; background:white;
+}
+button:disabled { opacity:0.5; cursor:not-allowed; }
+
+#noodBtn {
+  background:red; color:white; font-size:18px; padding:12px 22px;
+  border:none; border-radius:10px;
+}
+
+/* Highlights (kleur bij geselecteerde knoppen) */
+.active-acc  { background:#2ecc71 !important; color:white; border:none; }
+.active-ori  { background:#3498db !important; color:white; border:none; }
+.active-red  { background:#e74c3c !important; color:white; border:none; }
+.active-park { background:#2ecc71 !important; color:white; border:none; }
+
+.pill { display:inline-block; padding:4px 10px; border-radius:999px; background:#eee; font-size:12px; margin-left:6px; }
+.greenHeader { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+
+/* Klein badgeje voor websocket status */
+.wsBadge {
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#eee;
+  font-size:12px;
+  margin-left:8px;
+}
