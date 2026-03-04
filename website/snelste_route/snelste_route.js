@@ -24,6 +24,10 @@ function tekenRooster() {
         for (let c = 1; c < cols; c++) {
             const marker = document.createElement('div');
             marker.classList.add('kruispunt');
+
+            marker.dataset.row = r;
+            marker.dataset.col = c;
+
             marker.style.left = `${c * KRUISPUNT_STAP + KRUISPUNT_OFFSET}px`;
             marker.style.top = `${r * KRUISPUNT_STAP + KRUISPUNT_OFFSET}px`;
             marker.addEventListener('click', () => toggleKruispunt(marker));
@@ -31,7 +35,6 @@ function tekenRooster() {
         }
     }
 
-    // Outer edge markers (blue only)
     const randPositions = [];
     for (let c = 1; c < cols; c++) {
         randPositions.push([0, c]);
@@ -45,6 +48,10 @@ function tekenRooster() {
         const marker = document.createElement('div');
         marker.classList.add('kruispunt');
         marker.dataset.rand = 'true';
+
+        marker.dataset.row = r;
+        marker.dataset.col = c;
+
         marker.style.left = `${c * KRUISPUNT_STAP + KRUISPUNT_OFFSET}px`;
         marker.style.top = `${r * KRUISPUNT_STAP + KRUISPUNT_OFFSET}px`;
         marker.addEventListener('click', () => toggleKruispunt(marker));
@@ -95,3 +102,25 @@ function toggleKruispunt(marker) {
 }
 
 window.onload = tekenRooster;
+
+function berekenRoute() {
+    const output = document.getElementById('route-output');
+    const allePunten = document.querySelectorAll('.kruispunt');
+
+    let start = null;
+    let groen = [];
+    let rood = [];
+
+    allePunten.forEach(p => {
+        const pos = { r: parseInt(p.dataset.row), c: parseInt(p.dataset.col) };
+        
+        if (p.classList.contains('blauw')) start = pos;
+        if (p.classList.contains('groen')) groen.push(pos);
+        if (p.classList.contains('rood')) rood.push(pos);
+
+        // start.r -> row
+        // start.c -> col
+        // array[i].r -> row
+        // array[i].c -> col
+    });
+}

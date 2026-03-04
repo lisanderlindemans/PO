@@ -34,24 +34,24 @@ const redTouched = new Set();
 // Garage status
 let parkedInGarage = false;
 
-const timeLeftEl     = document.getElementById("timeLeft");
-const totalScoreEl   = document.getElementById("totalScore");
+const timeLeftEl = document.getElementById("timeLeft");
+const totalScoreEl = document.getElementById("totalScore");
 
-const statusEl       = document.getElementById("gameStatus");
-const statusHintEl   = document.getElementById("statusHint");
+const statusEl = document.getElementById("gameStatus");
+const statusHintEl = document.getElementById("statusHint");
 
-const redCountEl     = document.getElementById("redCount");
-const redPenaltyEl   = document.getElementById("redPenalty");
-const garageBonusEl  = document.getElementById("garageBonus");
-const timeBonusEl    = document.getElementById("timeBonus");
+const redCountEl = document.getElementById("redCount");
+const redPenaltyEl = document.getElementById("redPenalty");
+const garageBonusEl = document.getElementById("garageBonus");
+const timeBonusEl = document.getElementById("timeBonus");
 
 const greensControlsEl = document.getElementById("greensControls");
-const redsControlsEl   = document.getElementById("redsControls");
+const redsControlsEl = document.getElementById("redsControls");
 
 const startBtn = document.getElementById("startBtn");
 const resetBtn = document.getElementById("resetBtn");
-const noodBtn  = document.getElementById("noodBtn");
-const parkBtn  = document.getElementById("parkBtn");
+const noodBtn = document.getElementById("noodBtn");
+const parkBtn = document.getElementById("parkBtn");
 
 function allGreensPlaced() {
   return greens.every(g => g.level !== null);
