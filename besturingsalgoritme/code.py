@@ -11,8 +11,8 @@ def debug(s):
     if debug:
         print(s)
 
-ldr1_voor = AnalogIn(board.GP27)
-ldr2_voor = AnalogIn(board.GP27)
+ldr_links_voor = AnalogIn(board.GP27) # PIN MOET NOG VERVANGEN
+ldr_rechts_voor = AnalogIn(board.GP27)
 ldr_achter = AnalogIn(board.GP27)
 
 def calculate_voltage(value):
@@ -23,18 +23,26 @@ reftijd = time.monotonic()
 while True:
     nu = time.monotonic()
     
-    ldr1_voor_value = calculate_voltage(ldr1_voor.value)
-    ldr2_voor_value = calculate_voltage(ldr2_voor.value)
+    ldr_links_voor_value = calculate_voltage(ldr_links_voor.value)
+    ldr_rechts_voor_value = calculate_voltage(ldr_rechts_voor.value)
     ldr_achter_value = calculate_voltage(ldr_achter.value)
 
-    if ldr1_voor_value >= 457 and ldr1_voor_value <= 465:
+    if ldr_links_voor_value >= 457 and ldr_links_voor_value <= 465:
         debug("LDR 1 voor is op zwart.")
-        ldr1_voor_black = True
-    if ldr2_voor_value >= 467 and ldr2_voor_value <= 480:
+        ldr_links_voor_black = True
+    else:
+        ldr_links_voor_black = False
+
+    if ldr_rechts_voor_value >= 467 and ldr_rechts_voor_value <= 480:
         debug("LDR 2 voor is op zwart.")
-        ldr2_voor_black = True
+        ldr_rechts_voor_black = True
+    else:
+        ldr_rechts_voor_black = False
+
     if ldr_achter_value >= 467 and ldr_achter_value <= 473:
         debug("LDR achter is op zwart.")
         ldr_achter_black = True
+    else:
+        ldr_links_voor_black = False
 
     time.sleep(0.01)
