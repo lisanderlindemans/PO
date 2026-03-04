@@ -8,7 +8,6 @@ body {
     display: grid;
     background-color: #000;
     gap: 1px;
-    padding: 1px;
     width: fit-content;
     margin-top: 20px;
     position: relative;
