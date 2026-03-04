@@ -44,10 +44,6 @@ const redTouched = new Set();
 // Garage status
 let parkedInGarage = false;
 
-// Undo/Redo stacks
-const undoStack = [];
-const redoStack = [];
-
 /************************************************************
  * 3) UI references (koppeling naar HTML elementen)
  ************************************************************/
@@ -68,8 +64,6 @@ const redsControlsEl   = document.getElementById("redsControls");
 
 const startBtn = document.getElementById("startBtn");
 const resetBtn = document.getElementById("resetBtn");
-const undoBtn  = document.getElementById("undoBtn");
-const redoBtn  = document.getElementById("redoBtn");
 const noodBtn  = document.getElementById("noodBtn");
 const parkBtn  = document.getElementById("parkBtn");
 
@@ -105,18 +99,8 @@ function computeTotalScore() {
 }
 
 /************************************************************
- * 5) UNDO/REDO model
+ * 5) ACTION model
  ************************************************************/
-// Acties die we onthouden:
-// - set_green: wijzig groen torentje (accuracy/orientation)
-// - touch_red: rood geraakt
-// - set_parked: garage toggle inclusief state/timer gedrag
-function pushAction(action) {
-  undoStack.push(action);
-  redoStack.length = 0;
-  render();
-}
-
 function applyAction(action, direction) {
   const doIt = (direction === "do");
 
@@ -147,22 +131,6 @@ function applyAction(action, direction) {
     }
     return;
   }
-}
-
-function undo() { //de undo button
-  if (undoStack.length === 0) return;
-  const action = undoStack.pop();
-  applyAction(action, "undo");
-  redoStack.push(action);
-  render();
-}
-
-function redo() { //de redo button
-  if (redoStack.length === 0) return;
-  const action = redoStack.pop();
-  applyAction(action, "do");
-  undoStack.push(action);
-  render();
 }
 
 /************************************************************
@@ -215,9 +183,6 @@ function resetGame() {
   redTouched.clear();
   greens.forEach(g => { g.level = null; g.orientation = "upright"; g.points = 0; });
 
-  undoStack.length = 0;
-  redoStack.length = 0;
-
   setTimerRunning(false);
   updateGreenInfo();
   render();
@@ -234,7 +199,6 @@ function setGreenAccuracy(idx, level) {
   const next = { level, orientation: greens[idx].orientation, points: pts };
 
   applyAction({ type:"set_green", index: idx, prev, next }, "do");
-  pushAction({ type:"set_green", index: idx, prev, next });
 
   updateGreenInfo();
   render();
@@ -249,7 +213,6 @@ function setGreenOrientation(idx, orientation) {
   const next = { level: greens[idx].level, orientation, points: pts };
 
   applyAction({ type:"set_green", index: idx, prev, next }, "do");
-  pushAction({ type:"set_green", index: idx, prev, next });
 
   updateGreenInfo();
   render();
@@ -267,7 +230,6 @@ function touchRed(id) {
   };
 
   applyAction(action, "do");
-  pushAction(action);
   render();
 }
 
@@ -301,7 +263,6 @@ function toggleParked() {
   };
 
   applyAction(action, "do");
-  pushAction(action);
   render();
 }
 
@@ -466,9 +427,6 @@ function render() {
 
   parkBtn.textContent = `Parked in garage: ${parkedInGarage ? "JA" : "NEE"}`;
 
-  undoBtn.disabled  = undoStack.length === 0;
-  redoBtn.disabled  = redoStack.length === 0;
-
   startBtn.disabled = (state !== "READY");
 
   updateGreenInfo();
@@ -480,8 +438,6 @@ function render() {
  ************************************************************/
 startBtn.addEventListener("click", startGame);
 resetBtn.addEventListener("click", resetGame);
-undoBtn.addEventListener("click", undo);
-redoBtn.addEventListener("click", redo);
 noodBtn.addEventListener("click", eStop);
 parkBtn.addEventListener("click", toggleParked);
 
