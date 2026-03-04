@@ -37,13 +37,16 @@ function tekenRooster() {
 }
 
 function toggleKruispunt(marker) {
-    if (!marker.classList.contains('groen') && !marker.classList.contains('rood')) {
+    if (!marker.classList.contains('groen') && !marker.classList.contains('rood') && !marker.classList.contains('blauw')) {
         marker.classList.add('groen');
     } else if (marker.classList.contains('groen')) {
         marker.classList.remove('groen');
         marker.classList.add('rood');
-    } else {
+    } else if (marker.classList.contains('rood')) {
         marker.classList.remove('rood');
+        marker.classList.add('blauw');
+    } else {
+        marker.classList.remove('blauw');
     }
 }
 

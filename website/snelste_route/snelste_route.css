@@ -23,7 +23,7 @@ body {
     transform: translate(-50%, -50%);
 }
 
-.kruispunt:not(.groen):not(.rood):hover {
+.kruispunt:not(.groen):not(.rood):not(.blauw):hover {
     background-color: rgba(200, 200, 200, 0.5);
 }
 
@@ -33,6 +33,10 @@ body {
 
 .kruispunt.rood {
     background-color: #e74c3c;
+}
+
+.kruispunt.blauw {
+    background-color: #4b57ff;
 }
 
 .cel {
