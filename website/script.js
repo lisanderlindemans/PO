@@ -1,27 +1,17 @@
-/************************************************************
- * 1) SPELREGELS (opdracht)
- ************************************************************/
-const GAME_SECONDS = 240;             // 4 minuten
-const ACC_POINTS   = { 1:100, 2:70, 3:50, 4:40, 5:20, 0:0 }; // accuraatheid → basispunten
+const GAME_SECONDS = 240; // in seconden
+const ACC_POINTS   = { 1:100, 2:70, 3:50, 4:40, 5:20, 0:0 };
 
-// Oriëntatie beïnvloedt punten:
-// - upright: punten blijven
-// - side: halve punten
-// - upside_down: 0 punten
 function applyOrientation(points, orientation) {
   if (orientation === "upside_down") return 0;
   if (orientation === "side") return Math.floor(points / 2);
   return points;
 }
 
-/************************************************************
- * 2) STATE (speltoestand)
- ************************************************************/
 // Mogelijke states:
 // READY  : klaar om te starten
 // RUNNING: timer loopt
-// ESTOP  : noodstop (timer loopt door volgens jouw regel)
-// PARKED : in garage (timer stopt, resterende tijd wordt bonus bij score)
+// ESTOP  : noodstop
+// PARKED : in garage
 // TIMEUP : tijd is op
 let state = "READY";
 
@@ -44,13 +34,9 @@ const redTouched = new Set();
 // Garage status
 let parkedInGarage = false;
 
-/************************************************************
- * 3) UI references (koppeling naar HTML elementen)
- ************************************************************/
 const timeLeftEl     = document.getElementById("timeLeft");
 const totalScoreEl   = document.getElementById("totalScore");
 
-// Let op: spelstatus is gameStatus (niet status!)
 const statusEl       = document.getElementById("gameStatus");
 const statusHintEl   = document.getElementById("statusHint");
 
@@ -67,9 +53,6 @@ const resetBtn = document.getElementById("resetBtn");
 const noodBtn  = document.getElementById("noodBtn");
 const parkBtn  = document.getElementById("parkBtn");
 
-/************************************************************
- * 4) SCORE helpers
- ************************************************************/
 function allGreensPlaced() {
   return greens.every(g => g.level !== null);
 }
@@ -78,17 +61,17 @@ function computeGreensScore() {
   return greens.reduce((sum, g) => sum + (g.points || 0), 0);
 }
 
-// Straf: -50 per uniek rood geraakt
+// -50 per uniek rood geraakt
 function computeRedPenalty() {
   return redTouched.size * 50;
 }
 
-// Garage bonus: +100 als geparkeerd en nog tijd over 
+// +100 als geparkeerd en nog tijd over 
 function computeGarageBonus() {
   return parkedInGarage && remaining > 0 ? 100 : 0;
 }
 
-// Tijdbonus: +1 per resterende seconde als ALLE groen geplaatst én geparkeerd binnen tijd
+// +1 per resterende seconde als ALLE groen geplaatst én geparkeerd binnen tijd
 function computeTimeBonus() {
   if (parkedInGarage && remaining > 0 && allGreensPlaced()) return remaining;
   return 0;
@@ -98,9 +81,6 @@ function computeTotalScore() {
   return computeGreensScore() - computeRedPenalty() + computeGarageBonus() + computeTimeBonus();
 }
 
-/************************************************************
- * 5) ACTION model
- ************************************************************/
 function applyAction(action, direction) {
   const doIt = (direction === "do");
 
@@ -133,15 +113,11 @@ function applyAction(action, direction) {
   }
 }
 
-/************************************************************
- * 6) TIMER control
- ************************************************************/
 function setTimerRunning(running) {
   const isCurrentlyRunning = (timerHandle !== null);
 
   if (running && !isCurrentlyRunning) {
 
-    // 🔥 Onmiddellijke eerste tick
     timerTick();
 
     timerHandle = setInterval(timerTick, 1000);
@@ -188,9 +164,6 @@ function resetGame() {
   render();
 }
 
-/************************************************************
- * 7) CONTROLS: groen/rood/garage/noodstop
- ************************************************************/
 function setGreenAccuracy(idx, level) {
   const prev = {...greens[idx]};
   const base = ACC_POINTS[level] ?? 0;
@@ -233,7 +206,6 @@ function touchRed(id) {
   render();
 }
 
-// Garage knop: timer stopt wanneer geparkeerd, en score gebruikt remaining als bonus-regel
 function toggleParked() {
   const prev = parkedInGarage;
   const next = !parkedInGarage;
@@ -246,7 +218,7 @@ function toggleParked() {
 
   if (next === true) {
     nextState = "PARKED";
-    nextTimerRunning = false;  // timer stopt meteen
+    nextTimerRunning = false; 
   } else {
     if (remaining <= 0) nextState = "TIMEUP";
     else if (prevState !== "READY") nextState = "RUNNING";
@@ -277,9 +249,7 @@ function eStop() {
   render();
 }
 
-/************************************************************
- * 8) UI opbouwen (groen/rood knoppen)
- ************************************************************/
+
 function buildGreenControls() {
   greensControlsEl.innerHTML = "";
 
@@ -374,7 +344,6 @@ function updateGreenInfo() {
 }
 
 function updateButtonHighlights() {
-  // reset green highlights
   document.querySelectorAll("button[data-type='acc']").forEach(btn => btn.classList.remove("active-acc"));
   document.querySelectorAll("button[data-type='ori']").forEach(btn => btn.classList.remove("active-ori"));
 
@@ -392,21 +361,17 @@ function updateButtonHighlights() {
     if (oriBtn) oriBtn.classList.add("active-ori");
   }
 
-  // red highlights
   document.querySelectorAll("button[data-red]").forEach(btn => btn.classList.remove("active-red"));
   for (const id of redTouched) {
     const redBtn = document.querySelector(`button[data-red='${id}']`);
     if (redBtn) redBtn.classList.add("active-red");
   }
 
-  // park highlight
+
   if (parkedInGarage) parkBtn.classList.add("active-park");
   else parkBtn.classList.remove("active-park");
 }
 
-/************************************************************
- * 9) RENDER: alles updaten op scherm
- ************************************************************/
 function render() {
   timeLeftEl.textContent   = remaining;
   totalScoreEl.textContent = computeTotalScore();
@@ -416,7 +381,6 @@ function render() {
   garageBonusEl.textContent= `${computeGarageBonus()}`;
   timeBonusEl.textContent  = `${computeTimeBonus()}`;
 
-  // spelstatus naar de UI
   statusEl.textContent = state;
 
   if (state === "READY")   statusHintEl.textContent = "Klaar om te starten.";
@@ -433,30 +397,15 @@ function render() {
   updateButtonHighlights();
 }
 
-/************************************************************
- * 10) WIRING: knoppen koppelen aan functies
- ************************************************************/
 startBtn.addEventListener("click", startGame);
 resetBtn.addEventListener("click", resetGame);
 noodBtn.addEventListener("click", eStop);
 parkBtn.addEventListener("click", toggleParked);
 
-// Initial UI build
 buildGreenControls();
 buildRedControls();
 render();
 
-/************************************************************
- * 11) OPDRACHT: WebSocket skelet-code (INTACT)
- ************************************************************
- * LET OP:
- * - Deze code gebruikt id="status" in de DOM.
- * - Daarom gebruiken wij id="gameStatus" voor de spelstatus.
- *
- * In de opdracht staat ook:
- *   socket = new WebSocket("ws://192.168.4.1:80/connect-websocket");
- * We laten dat intact zoals gevraagd.
- ************************************************************/
 let socket = undefined;
 
 function connect_socket() {
@@ -498,15 +447,3 @@ function sendCommand(command) {
         alert("Not connected to the PICO")
     }
 }
-
-/************************************************************
- * 12) LATER uitbreiden (optioneel)
- ************************************************************
- * Als je later wél commando's wil sturen vanaf je bestaande knoppen,
- * dan kan je bv. IN je bestaande event handlers iets toevoegen zoals:
- *
- *   sendCommand("ESTOP");
- *   sendCommand("PARK");
- *
- * Maar momenteel doen we dat niet automatisch, enkel connecten.
- ************************************************************/
