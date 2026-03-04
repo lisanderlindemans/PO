@@ -11,6 +11,7 @@ function tekenRooster() {
     container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
 
     container.innerHTML = '';
+    vorigeBlauwMarker = null;
 
     const totaal = cols * rows;
     for (let i = 0; i < totaal; i++) {
@@ -51,9 +52,12 @@ function tekenRooster() {
     }
 }
 
+let vorigeBlauwMarker = null;
+
 function verwijderBlauw() {
     const existing = document.querySelector('.kruispunt.blauw');
     if (existing) {
+        vorigeBlauwMarker = existing;
         existing.classList.remove('blauw');
     }
 }
@@ -64,6 +68,10 @@ function toggleKruispunt(marker) {
     if (isRand) {
         if (marker.classList.contains('blauw')) {
             marker.classList.remove('blauw');
+            if (vorigeBlauwMarker && vorigeBlauwMarker !== marker) {
+                vorigeBlauwMarker.classList.add('blauw');
+            }
+            vorigeBlauwMarker = null;
         } else {
             verwijderBlauw();
             marker.classList.add('blauw');
@@ -79,6 +87,10 @@ function toggleKruispunt(marker) {
         marker.classList.add('blauw');
     } else {
         marker.classList.remove('blauw');
+        if (vorigeBlauwMarker && vorigeBlauwMarker !== marker) {
+            vorigeBlauwMarker.classList.add('blauw');
+        }
+        vorigeBlauwMarker = null;
     }
 }
 
