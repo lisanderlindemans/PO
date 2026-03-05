@@ -108,7 +108,7 @@ function bevatPunt(lijst, r, c) {
 }
 
 function vindPad(start, doel, roodLijst, maxRows, maxCols) {
-    let queue = [[{ ...start, pad: [] }]];
+    let queue = [{ ...start, pad: [] }];
     let bezocht = new Set();
     bezocht.add(`${start.r},${start.c}`);
   
@@ -188,12 +188,12 @@ function berekenRoute() {
         }
       
         route.push(...kortstePad);
-      	huidigePos = nogTeBezoeken[dichtstbijzijnde];
+      	huidigePos = nogTePlaatsen[dichtstbijzijnde];
       	nogTePlaatsen.splice(dichtstbijzijnde, 1);
     }
 
-    console.log("Snelste route gevonden:", volledigeRoute);
-    tekenRouteAnimatie(volledigeRoute);
+    console.log("Snelste route gevonden:", route);
+    tekenRouteAnimatie(route);
 }
 
 function tekenRouteAnimatie(route) {
