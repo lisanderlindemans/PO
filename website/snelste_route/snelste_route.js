@@ -103,9 +103,46 @@ function toggleKruispunt(marker) {
 
 window.onload = tekenRooster;
 
+function bevatPunt(lijst, r, c) {
+    return lijst.some(p => p.r === r && p.c === c);
+}
+
+function vindPad(start, doel, roodLijst, maxRows, maxCols) {
+    let queue = [[{ ...start, pad: [] }]];
+    let bezocht = new Set();
+    bezocht.add(`${start.r},${start.c}`);
+  
+  	while (queue.length > 0) {
+        let { r, c, pad } = queue.shift();
+
+        if (r === doel.r && c === doel.c) return pad;
+
+        // Kijk naar de buren
+        const buren = [
+            { r: r + 1, c: c }, { r: r - 1, c: c },
+            { r: r, c: c + 1 }, { r: r, c: c - 1 }
+        ];
+
+        for (let buur of buren) {
+            let sleutel = `${buur.r},${buur.c}`;
+          
+            if (buur.r >= 0 && buur.r <= maxRows && 
+                buur.c >= 0 && buur.c <= maxCols && 
+                !bevatPunt(roodLijst, buur.r, buur.c) && 
+                !bezocht.has(sleutel)) {
+                
+                bezocht.add(sleutel);
+                queue.push({ ...buur, pad: [...pad, buur] });
+            }
+        }
+    }
+    return null;
+}
+
 function berekenRoute() {
-    const output = document.getElementById('route-output');
     const allePunten = document.querySelectorAll('.kruispunt');
+    const cols = parseInt(document.getElementById('inputCols').value);
+    const rows = parseInt(document.getElementById('inputRows').value); 
 
     let start = null;
     let groen = [];
@@ -122,5 +159,50 @@ function berekenRoute() {
         // start.c -> col
         // array[i].r -> row
         // array[i].c -> col
+    });
+	
+    if (!start || groen.length === 0) {
+    	alert("Zet een blauwe start positie en min. 1 groen punt");
+      	return;
+    }
+	
+    let huidigePos = start;
+    let nogTePlaatsen = [...groen];
+    let route = [];
+  
+    while (nogTePlaatsen.length > 0) {
+    	let dichtstbijzijnde;
+    	let kortstePad;
+      
+      	for (let i = 0; i < nogTePlaatsen.length; i++) {
+            let pad = vindPad(huidigePos, nogTePlaatsen[i], rood, rows, cols);
+            if (pad && (!kortstePad || pad.length < kortstePad.length)) {
+                kortstePad = pad;
+                dichtstbijzijnde = i;
+            }
+        }
+
+		if (!kortstePad) {
+            alert("Sommige groene punten zijn onbereikbaar door de rode muren!");
+            return;
+        }
+      
+        route.push(...kortstePad);
+      	huidigePos = nogTeBezoeken[dichtstbijzijnde];
+      	nogTePlaatsen.splice(dichtstbijzijnde, 1);
+    }
+
+    console.log("Snelste route gevonden:", volledigeRoute);
+    tekenRouteAnimatie(volledigeRoute);
+}
+
+function tekenRouteAnimatie(route) {
+    route.forEach((stap, index) => {
+        setTimeout(() => {
+            const punt = document.querySelector(`.kruispunt[data-row="${stap.r}"][data-col="${stap.c}"]`);
+            if (punt && !punt.classList.contains('groen')) {
+                punt.style.backgroundColor = 'yellow';
+            }
+        }, index * 200);
     });
 }
