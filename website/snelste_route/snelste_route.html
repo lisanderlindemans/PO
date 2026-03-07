@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang = 'nl'>
-<head>
-    <h1>
-        Snelste route website
-    </h1>
-
-    <a href="../algemene_site/index.html" class="button">Ga naar website</a>
-
-    <meta charset="UTF-8">
-    <title>Snelste route</title>
-    <link rel="stylesheet" href="snelste_route.css">
-</head>
 <body>
+    <div id="topBar">
+        <a href="../algemene_site/index.html">Home</a>
+        <a href="../snelste_route/snelste_route.html" class="active">Snelste route</a>
+        <button onclick="noodStop()">NOODSTOP</button>
+    </div>
+
+    <head>
+        <h1>
+            Snelste route website
+        </h1>
+
+        <meta charset="UTF-8">
+        <title>Snelste route</title>
+        <link rel="stylesheet" href="snelste_route.css">
+    </head>
+
     <div class="controls">
         <input type="number" id="inputCols" value="10" placeholder="Kolommen">
         <input type="number" id="inputRows" value="8" placeholder="Rijen">
@@ -20,6 +25,7 @@
 
     <div id="rooster"></div>
 
+    <script src="../shared.js"></script>
     <script src="snelste_route.js"></script>
 
     <h2></h2>

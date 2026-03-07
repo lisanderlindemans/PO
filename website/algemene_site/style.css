@@ -39,3 +39,43 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
   font-size:12px;
   margin-left:8px;
 }
+
+#topBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  background: #eee;
+  border-bottom: 1px solid #ccc;
+  z-index: 1000;
+}
+
+body {
+  margin: 0;
+  padding-top: 60px;
+}
+
+#topBar a {
+  text-decoration: none;
+  padding: 6px 10px;
+  background: white;
+  border: 1px solid #ccc;
+  color: black;
+}
+
+#topBar a.active {
+  background: #ccc;
+  font-weight: bold;
+}
+
+#topBar button {
+  margin-left: auto;
+  padding: 6px 12px;
+  background: red;
+  color: white;
+  border: none;
+}

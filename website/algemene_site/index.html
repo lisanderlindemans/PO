@@ -9,6 +9,12 @@
 </head>
 
 <body>
+  <div id="topBar">
+    <a href="../algemene_site/index.html" class="active">Home</a>
+    <a href="../snelste_route/snelste_route.html">Snelste route</a>
+    <button onclick="noodStop()">NOODSTOP</button>
+  </div>
+
   <h1>Robotwagen Webinterface</h1>
 
   <div class="card">
@@ -38,11 +44,8 @@
     </div>
 
     <div style="margin-top:10px;">
-      <a href="../snelste_route/snelste_route.html" class="button">Ga naar snelste route bepaling</a>
       <button id="startBtn">Start</button>
       <button id="resetBtn">Reset</button>
-
-      <button id="noodBtn">NOODSTOP</button>
 
       <button id="parkBtn">Parked in garage: NEE</button>
 
@@ -88,5 +91,6 @@
     </div>
   </div>
 
+  <script src="../shared.js"></script>
   <script src="script.js"></script>
 </body>

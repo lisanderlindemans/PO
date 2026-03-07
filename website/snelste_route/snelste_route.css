@@ -50,3 +50,54 @@ body {
     background-color: yellow;
     pointer-events: none;
 }
+
+button {
+  padding:8px 12px; font-size:14px; margin:6px 6px 0 0;
+  cursor:pointer; border-radius:10px; border:1px solid #ddd; background:white;
+}
+button:disabled { opacity:0.5; cursor:not-allowed; }
+
+#noodBtn {
+  background:red; color:white; font-size:18px; padding:12px 22px;
+  border:none; border-radius:10px;
+}
+
+#topBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  background: #eee;
+  border-bottom: 1px solid #ccc;
+  z-index: 1000;
+}
+
+body {
+  margin: 0;
+  padding-top: 60px;
+}
+
+#topBar a {
+  text-decoration: none;
+  padding: 6px 10px;
+  background: white;
+  border: 1px solid #ccc;
+  color: black;
+}
+
+#topBar a.active {
+  background: #ccc;
+  font-weight: bold;
+}
+
+#topBar button {
+  margin-left: auto;
+  padding: 6px 12px;
+  background: red;
+  color: white;
+  border: none;
+}

@@ -50,7 +50,6 @@ const redsControlsEl = document.getElementById("redsControls");
 
 const startBtn = document.getElementById("startBtn");
 const resetBtn = document.getElementById("resetBtn");
-const noodBtn = document.getElementById("noodBtn");
 const parkBtn = document.getElementById("parkBtn");
 
 function allGreensPlaced() {
@@ -238,17 +237,6 @@ function toggleParked() {
   render();
 }
 
-// NOODSTOP: timer blijft lopen (als hij al liep)
-function eStop() {
-  if (state === "READY") {
-    // In READY loopt timer nog niet, maar we tonen ESTOP als status
-    state = "ESTOP";
-  } else if (state !== "TIMEUP" && state !== "PARKED") {
-    state = "ESTOP";
-  }
-  render();
-}
-
 
 function buildGreenControls() {
   greensControlsEl.innerHTML = "";
@@ -399,7 +387,6 @@ function render() {
 
 startBtn.addEventListener("click", startGame);
 resetBtn.addEventListener("click", resetGame);
-noodBtn.addEventListener("click", eStop);
 parkBtn.addEventListener("click", toggleParked);
 
 buildGreenControls();
