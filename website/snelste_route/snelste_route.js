@@ -5,13 +5,6 @@ const KRUISPUNT_OFFSET = ROOSTER_GAP / 2;
 
 let getekendeSegmenten = new Map();
 
-const RICHTINGEN = [
-    { dr: 1, dc: 0, naam: "down" },
-    { dr: -1, dc: 0, naam: "up" },
-    { dr: 0, dc: 1, naam: "right" },
-    { dr: 0, dc: -1, naam: "left" }
-];
-
 function tekenRooster() {
     const cols = parseInt(document.getElementById('inputCols').value, 10);
     const rows = parseInt(document.getElementById('inputRows').value, 10);
