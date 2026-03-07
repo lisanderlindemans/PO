@@ -3,6 +3,15 @@ const ROOSTER_GAP = 1;
 const KRUISPUNT_STAP = CEL_GROOTTE + ROOSTER_GAP;
 const KRUISPUNT_OFFSET = ROOSTER_GAP / 2;
 
+let getekendeSegmenten = new Map();
+
+const RICHTINGEN = [
+    { dr: 1, dc: 0, naam: "down" },
+    { dr: -1, dc: 0, naam: "up" },
+    { dr: 0, dc: 1, naam: "right" },
+    { dr: 0, dc: -1, naam: "left" }
+];
+
 function tekenRooster() {
     const cols = parseInt(document.getElementById('inputCols').value, 10);
     const rows = parseInt(document.getElementById('inputRows').value, 10);
@@ -72,6 +81,8 @@ function verwijderBlauw() {
 function toggleKruispunt(marker) {
     const isRand = marker.dataset.rand === 'true';
 
+    verwijderRoute();
+
     if (isRand) {
         if (marker.classList.contains('blauw')) {
             marker.classList.remove('blauw');
@@ -107,6 +118,10 @@ function bevatPunt(lijst, r, c) {
     return lijst.some(p => p.r === r && p.c === c);
 }
 
+function isRand(r, c, maxRows, maxCols) {
+    return r === 0 || c === 0 || r === maxRows || c === maxCols;
+}
+
 function vindPad(start, doel, roodLijst, maxRows, maxCols) {
     let queue = [{ ...start, pad: [] }];
     let bezocht = new Set();
@@ -117,7 +132,6 @@ function vindPad(start, doel, roodLijst, maxRows, maxCols) {
 
         if (r === doel.r && c === doel.c) return pad;
 
-        // Kijk naar de buren
         const buren = [
             { r: r + 1, c: c }, { r: r - 1, c: c },
             { r: r, c: c + 1 }, { r: r, c: c - 1 }
@@ -126,10 +140,16 @@ function vindPad(start, doel, roodLijst, maxRows, maxCols) {
         for (let buur of buren) {
             let sleutel = `${buur.r},${buur.c}`;
           
-            if (buur.r >= 0 && buur.r <= maxRows && 
-                buur.c >= 0 && buur.c <= maxCols && 
-                !bevatPunt(roodLijst, buur.r, buur.c) && 
-                !bezocht.has(sleutel)) {
+            if (
+                buur.r >= 0 && buur.r <= maxRows &&
+                buur.c >= 0 && buur.c <= maxCols &&
+                !bevatPunt(roodLijst, buur.r, buur.c) &&
+                !bezocht.has(sleutel) &&
+                (
+                    !isRand(buur.r, buur.c, maxRows, maxCols) ||
+                    (buur.r === doel.r && buur.c === doel.c)
+                )
+            ) {
                 
                 bezocht.add(sleutel);
                 queue.push({ ...buur, pad: [...pad, buur] });
@@ -168,7 +188,7 @@ function berekenRoute() {
 	
     let huidigePos = start;
     let nogTePlaatsen = [...groen];
-    let route = [];
+    let route = [start];
   
     while (nogTePlaatsen.length > 0) {
     	let dichtstbijzijnde;
@@ -192,17 +212,85 @@ function berekenRoute() {
       	nogTePlaatsen.splice(dichtstbijzijnde, 1);
     }
 
-    console.log("Snelste route gevonden:", route);
-    tekenRouteAnimatie(route);
+    let terugPad = vindPad(huidigePos, start, rood, rows, cols);
+
+    if (!terugPad) {
+        alert("Kan niet terugkeren naar de startpositie!");
+        return;
+    }
+
+    const heenRoute = [...route];
+    const terugRoute = [huidigePos, ...terugPad];
+
+    console.log("Snelste route gevonden:", [...heenRoute, ...terugPad]);
+
+    verwijderRoute();
+
+    tekenRouteAnimatie(heenRoute, "yellow", 0);
+
+    tekenRouteAnimatie(
+        terugRoute,
+        "blue",
+        (heenRoute.length - 1) * 200
+    );
 }
 
-function tekenRouteAnimatie(route) {
-    route.forEach((stap, index) => {
+function verwijderRoute() {
+    document.querySelectorAll('.route-lijn').forEach(e => e.remove());
+    getekendeSegmenten.clear();
+}
+
+function segmentKey(a, b) {
+    const k1 = `${a.r},${a.c}-${b.r},${b.c}`;
+    const k2 = `${b.r},${b.c}-${a.r},${a.c}`;
+    return k1 < k2 ? k1 : k2;
+}
+
+function tekenRouteAnimatie(route, kleur = "yellow", startDelay = 0) {
+    const container = document.getElementById('rooster');
+
+    for (let i = 0; i < route.length - 1; i++) {
+        const a = route[i];
+        const b = route[i + 1];
+
         setTimeout(() => {
-            const punt = document.querySelector(`.kruispunt[data-row="${stap.r}"][data-col="${stap.c}"]`);
-            if (punt && !punt.classList.contains('groen')) {
-                punt.style.backgroundColor = 'yellow';
+
+            const key = segmentKey(a, b);
+            let finaleKleur = kleur;
+
+            if (kleur === "blue" && getekendeSegmenten.has(key)) {
+                finaleKleur = "green";
+                getekendeSegmenten.get(key).style.backgroundColor = "green";
             }
-        }, index * 200);
-    });
+
+            const lijn = document.createElement('div');
+            lijn.classList.add('route-lijn');
+            lijn.style.backgroundColor = finaleKleur;
+
+            const x1 = a.c * KRUISPUNT_STAP + KRUISPUNT_OFFSET;
+            const y1 = a.r * KRUISPUNT_STAP + KRUISPUNT_OFFSET;
+
+            const x2 = b.c * KRUISPUNT_STAP + KRUISPUNT_OFFSET;
+            const y2 = b.r * KRUISPUNT_STAP + KRUISPUNT_OFFSET;
+
+            if (x1 === x2) {
+                lijn.style.left = `${x1 - 2}px`;
+                lijn.style.top = `${Math.min(y1, y2)}px`;
+                lijn.style.width = `4px`;
+                lijn.style.height = `${Math.abs(y2 - y1)}px`;
+            } else {
+                lijn.style.left = `${Math.min(x1, x2)}px`;
+                lijn.style.top = `${y1 - 2}px`;
+                lijn.style.width = `${Math.abs(x2 - x1)}px`;
+                lijn.style.height = `4px`;
+            }
+
+            container.appendChild(lijn);
+
+            if (!getekendeSegmenten.has(key)) {
+                getekendeSegmenten.set(key, lijn);
+            }
+
+        }, startDelay + i * 200);
+    }
 }

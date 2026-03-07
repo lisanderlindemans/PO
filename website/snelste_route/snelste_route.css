@@ -44,3 +44,9 @@ body {
     height: 30px;
     background-color: #fff;
 }
+
+.route-lijn {
+    position: absolute;
+    background-color: yellow;
+    pointer-events: none;
+}
