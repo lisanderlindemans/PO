@@ -5,7 +5,7 @@ const KRUISPUNT_OFFSET = ROOSTER_GAP / 2;
 
 let getekendeSegmenten = new Map();
 
-function tekenRooster() {
+function tekenRooster() { // Niet in flowchart
     const cols = parseInt(document.getElementById('inputCols').value, 10);
     const rows = parseInt(document.getElementById('inputRows').value, 10);
     const container = document.getElementById('rooster');
@@ -63,7 +63,7 @@ function tekenRooster() {
 
 let vorigeBlauwMarker = null;
 
-function verwijderBlauw() {
+function verwijderBlauw() { // Niet in flowchart
     const existing = document.querySelector('.kruispunt.blauw');
     if (existing) {
         vorigeBlauwMarker = existing;
@@ -71,7 +71,7 @@ function verwijderBlauw() {
     }
 }
 
-function toggleKruispunt(marker) {
+function toggleKruispunt(marker) { // Niet in flowchart
     const isRand = marker.dataset.rand === 'true';
 
     verwijderRoute();
@@ -107,48 +107,63 @@ function toggleKruispunt(marker) {
 
 window.onload = tekenRooster;
 
+// Check of het kruispunt een torentje bevat
 function bevatPunt(lijst, r, c) {
     return lijst.some(p => p.r === r && p.c === c);
 }
 
+// Check of het kruispunt op de rand is
 function isRand(r, c, maxRows, maxCols) {
     return r === 0 || c === 0 || r === maxRows || c === maxCols;
 }
 
+// Bereken korste route van punt tot punt
 function vindPad(start, doel, roodLijst, maxRows, maxCols) {
     let queue = [{ ...start, pad: [] }];
+
+    // Set om te zorgen dat we niet de hele tijd dezelfde kruispunten af gaan
     let bezocht = new Set();
+    // Voeg start pos toe
     bezocht.add(`${start.r},${start.c}`);
   
+    // Blijf zoeken zolang er posities in de queue zitten
   	while (queue.length > 0) {
         let { r, c, pad } = queue.shift();
 
+        // Als het doel bereikt is, return het pad
         if (r === doel.r && c === doel.c) return pad;
 
+        // Neem alle kruispunten in de buurt
         const buren = [
             { r: r + 1, c: c }, { r: r - 1, c: c },
             { r: r, c: c + 1 }, { r: r, c: c - 1 }
         ];
 
+        // Check alle buren
         for (let buur of buren) {
             let sleutel = `${buur.r},${buur.c}`;
           
             if (
+                // Checks of de buur in het grid zit en of het geen rood torentje is
                 buur.r >= 0 && buur.r <= maxRows &&
                 buur.c >= 0 && buur.c <= maxCols &&
                 !bevatPunt(roodLijst, buur.r, buur.c) &&
+                // Zorg dat het niet de hele tijd dezelfde kruispunten afgaat
                 !bezocht.has(sleutel) &&
                 (
+                    // Mag geen rand punt zijn tenzij het het doel is (dit moet zo omdat het anders geen terugroute vindt naar de start locatie die op de rand ligt)
                     !isRand(buur.r, buur.c, maxRows, maxCols) ||
                     (buur.r === doel.r && buur.c === doel.c)
                 )
             ) {
-                
+                // Markeer kruispunt als bezocht
                 bezocht.add(sleutel);
                 queue.push({ ...buur, pad: [...pad, buur] });
             }
         }
     }
+
+    // Geen pad gevonden
     return null;
 }
 
@@ -161,6 +176,7 @@ function berekenRoute() {
     let groen = [];
     let rood = [];
 
+    // Neem de ingevoerde punten
     allePunten.forEach(p => {
         const pos = { r: parseInt(p.dataset.row), c: parseInt(p.dataset.col) };
         
@@ -174,6 +190,7 @@ function berekenRoute() {
         // array[i].c -> col
     });
 	
+    // Geen start geplaatst
     if (!start || groen.length === 0) {
     	alert("Zet een blauwe start positie en min. 1 groen punt");
       	return;
@@ -183,35 +200,47 @@ function berekenRoute() {
     let nogTePlaatsen = [...groen];
     let route = [start];
   
+    // Loop zolang nog niet alle torentjes geplaatst/bereikt zijn
     while (nogTePlaatsen.length > 0) {
     	let dichtstbijzijnde;
     	let kortstePad;
       
+        // Zoek het dichtsbijzijnde groen punt
       	for (let i = 0; i < nogTePlaatsen.length; i++) {
+            // Bereken korste pad naar punt
             let pad = vindPad(huidigePos, nogTePlaatsen[i], rood, rows, cols);
+
+            // Check of het pad korter is dan vorige gezochten paden
             if (pad && (!kortstePad || pad.length < kortstePad.length)) {
                 kortstePad = pad;
                 dichtstbijzijnde = i;
             }
         }
 
+        // Er is geen route/bereikbaar groen punt
 		if (!kortstePad) {
             alert("Sommige groene punten zijn onbereikbaar door de rode muren!");
             return;
         }
       
+        // Voeg het pad toe aan de totale route
         route.push(...kortstePad);
+        // Sla de positie op waar het pad is geeindigd
       	huidigePos = nogTePlaatsen[dichtstbijzijnde];
+        // Verwijder het groene punt van de ongeplaatste punten lijst
       	nogTePlaatsen.splice(dichtstbijzijnde, 1);
     }
 
+    // Bereken pad van laatste groene punt naar de start positie
     let terugPad = vindPad(huidigePos, start, rood, rows, cols);
 
+    // Er is geen route terug
     if (!terugPad) {
         alert("Kan niet terugkeren naar de startpositie!");
         return;
     }
 
+    // Code voor animatie te tonen op website (niet toegevoegd aan deze upload)
     const heenRoute = [...route];
     const terugRoute = [huidigePos, ...terugPad];
 
@@ -228,18 +257,18 @@ function berekenRoute() {
     );
 }
 
-function verwijderRoute() {
+function verwijderRoute() { // Niet in flowchart
     document.querySelectorAll('.route-lijn').forEach(e => e.remove());
     getekendeSegmenten.clear();
 }
 
-function segmentKey(a, b) {
+function segmentKey(a, b) { // Niet in flowchart
     const k1 = `${a.r},${a.c}-${b.r},${b.c}`;
     const k2 = `${b.r},${b.c}-${a.r},${a.c}`;
     return k1 < k2 ? k1 : k2;
 }
 
-function tekenRouteAnimatie(route, kleur = "yellow", startDelay = 0) {
+function tekenRouteAnimatie(route, kleur = "yellow", startDelay = 0) { // Niet in flowchart
     const container = document.getElementById('rooster');
 
     for (let i = 0; i < route.length - 1; i++) {

@@ -4,34 +4,36 @@ import time
 from adafruit_httpserver import Server, Request, GET, Websocket
 import board
 
-SSID = "PICO-TEAM-106"      # Verander X naar groepsnummer
-PASSWORD = "TmV2CA1x0z39oipbI47A"     # Minstens 8 tekens, verander voor veiligheid
+SSID = "PICO-TEAM-106"
+PASSWORD = "TmV2CA1x0z39oipbI47A"
 
-wifi.radio.start_ap(ssid=SSID, password=PASSWORD)
-
-# print IP adres
-print("My IP address is", wifi.radio.ipv4_address_ap)
-
-pool = socketpool.SocketPool(wifi.radio)
-server = Server(pool, "/static", debug=True)
-
+server = None
 websocket = None
 
-# Deze functie wordt uitgevoerd wanneer de server een HTTP request ontvangt
-@server.route("/connect-websocket", GET)
-def connect_client(request: Request):
-    global websocket  # pylint: disable=global-statement
+def start_wifi():
+    global server
 
-    if websocket is not None:
-        websocket.close()  # Close any existing connection
+    wifi.radio.start_ap(ssid=SSID, password=PASSWORD)
 
-    websocket = Websocket(request)
-    return websocket
+    print("My IP address is", wifi.radio.ipv4_address_ap)
 
-server.start(str(wifi.radio.ipv4_address_ap))
+    pool = socketpool.SocketPool(wifi.radio)
+    server = Server(pool, "/static", debug=True)
 
-while True:
-    server.poll() #de wifi
+    @server.route("/connect-websocket", GET)
+    def connect_client(request: Request):
+        global websocket
+
+        if websocket is not None:
+            websocket.close()
+
+        websocket = Websocket(request)
+        return websocket
+
+    server.start(str(wifi.radio.ipv4_address_ap))
+
+def wifi_loop():
+    server.poll()
 
     if websocket is not None:
         data = websocket.receive(fail_silently=True)

@@ -4,6 +4,7 @@ import board
 import digitalio
 import pwmio
 from analogio import AnalogIn
+from wifi_verbinding import wifi_loop, start_wifi
 
 # DEBUG MODE
 debug = True
@@ -19,10 +20,12 @@ ldr_links_voor = AnalogIn(board.GP27) # PIN MOET NOG VERVANGEN
 ldr_rechts_voor = AnalogIn(board.GP27)
 ldr_achter = AnalogIn(board.GP27)
 
+start_wifi()
+
 reftijd = time.monotonic()
 
 while True:
-    
+    wifi_loop()
 
     nu = time.monotonic()
     
