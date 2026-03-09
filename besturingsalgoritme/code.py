@@ -4,7 +4,7 @@ import board
 import digitalio
 import pwmio
 from analogio import AnalogIn
-from wifi_verbinding import wifi_loop, start_wifi
+from wifi_verbinding import wifi_loop, start_wifi, route_data
 
 # DEBUG MODE
 debug = True
@@ -29,26 +29,12 @@ while True:
 
     nu = time.monotonic()
     
-    ldr_links_voor_value = calculate_voltage(ldr_links_voor.value)
-    ldr_rechts_voor_value = calculate_voltage(ldr_rechts_voor.value)
-    ldr_achter_value = calculate_voltage(ldr_achter.value)
+    if route_data is not None:
+        heenroute = route_data["heenroute"]
+        terugroute = route_data["terugroute"]
+        groenpunten = route_data["groenpunten"]
 
-    if ldr_links_voor_value >= 457 and ldr_links_voor_value <= 465:
-        debug("LDR 1 voor is op zwart.")
-        ldr_links_voor_black = True
-    else:
-        ldr_links_voor_black = False
-
-    if ldr_rechts_voor_value >= 467 and ldr_rechts_voor_value <= 480:
-        debug("LDR 2 voor is op zwart.")
-        ldr_rechts_voor_black = True
-    else:
-        ldr_rechts_voor_black = False
-
-    if ldr_achter_value >= 467 and ldr_achter_value <= 473:
-        debug("LDR achter is op zwart.")
-        ldr_achter_black = True
-    else:
-        ldr_links_voor_black = False
+        debug("Heenroute ontvangen:")
+        debug(heenroute)
 
     time.sleep(0.01)

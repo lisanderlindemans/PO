@@ -1,8 +1,7 @@
 import socketpool
 import wifi
-import time
 from adafruit_httpserver import Server, Request, GET, Websocket
-import board
+import json
 
 SSID = "PICO-TEAM-106"
 PASSWORD = "TmV2CA1x0z39oipbI47A"
@@ -33,9 +32,17 @@ def start_wifi():
     server.start(str(wifi.radio.ipv4_address_ap))
 
 def wifi_loop():
+    global route_data
+
     server.poll()
 
     if websocket is not None:
         data = websocket.receive(fail_silently=True)
+
         if data is not None:
             print(data)
+
+            try:
+                route_data = json.loads(data)
+            except Exception as e:
+                print("JSON error:", e)
