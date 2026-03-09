@@ -1,8 +1,5 @@
 import time
-from adafruit_httpserver import Server, Request, GET, Websocket
 import board
-import digitalio
-import pwmio
 from analogio import AnalogIn
 from wifi_verbinding import wifi_loop, start_wifi, route_data
 
