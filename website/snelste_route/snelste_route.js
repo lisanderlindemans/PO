@@ -255,6 +255,29 @@ function berekenRoute() {
         "blue",
         (heenRoute.length - 1) * 200
     );
+
+    sendRoute(heenRoute, terugRoute, groen);
+}
+
+function naarCoordArray(punten) {
+    return punten.map(p => [p.r, p.c]);
+}
+
+function sendRoute(heenRoute, terugRoute, groen) {
+    const json = {
+        heenroute: naarCoordArray(heenRoute),
+        terugroute: naarCoordArray(terugRoute),
+        groenpunten: naarCoordArray(groen)
+    };
+
+    // Example output:
+    /*
+    {
+        "heenroute":[[0,2],[1,2],[2,2],[2,3],[2,4],[2,5],[2,6]],
+        "terugroute":[[2,6],[1,6],[1,5],[1,4],[1,3],[1,2],[0,2]],
+        "groenpunten":[[2,6]]
+    }
+    */
 }
 
 function verwijderRoute() { // Niet in flowchart
