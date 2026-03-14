@@ -2,20 +2,14 @@ import time
 import board
 from analogio import AnalogIn
 from wifi_verbinding import wifi_loop, start_wifi, route_data
+from route_volger import volg_route
 
 # DEBUG MODE
-debug = True
+DEBUG = True
 
 def debug(s):
-    if debug:
+    if DEBUG:
         print(s)
-
-def calculate_voltage(value):
-    return (value * 3.3) / 65535
-
-ldr_links_voor = AnalogIn(board.GP27) # PIN MOET NOG VERVANGEN
-ldr_rechts_voor = AnalogIn(board.GP27)
-ldr_achter = AnalogIn(board.GP27)
 
 start_wifi()
 
@@ -33,5 +27,15 @@ while True:
 
         debug("Heenroute ontvangen:")
         debug(heenroute)
+
+        heen_groen = []
+        for punt in groenpunten:
+            if punt not in terugroute:
+                heen_groen.append(punt)
+
+        terug_groen = groenpunten.copy()
+            
+        volg_route(heenroute, heen_groen)
+        volg_route(terugroute, terug_groen)
 
     time.sleep(0.01)
