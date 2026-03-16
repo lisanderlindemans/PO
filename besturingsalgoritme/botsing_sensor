@@ -2,6 +2,7 @@ import board
 import busio
 import time
 import adafruit_us100
+from wifi_verbinding import debug
 
 uart = busio.UART(board.GP0, board.GP1, baudrate=9600)
 sensor = adafruit_us100.US100(uart)
@@ -26,7 +27,7 @@ def meet_gemiddelde():
 def botsing_sensor_loop():
     afstand = meet_gemiddelde()
     if afstand is not None:
-        print(f"Afstand: {afstand:.1f} cm")
+        debug(f"Afstand: {afstand:.1f} cm")
         # Botsing logica
         if afstand < BOTSING_DREMPEL:
             BOTSING_COUNTER += 1
@@ -34,8 +35,5 @@ def botsing_sensor_loop():
             BOTSING_COUNTER = 0
 
         if BOTSING_COUNTER >= BOTSING_MIN_METINGEN:
-            print("Botsing gedetecteerd!")
+            debug("Botsing gedetecteerd!")
             # hier motoren stoppen: motor_stop()
-    else:
-        print("Geen geldige meting")
-    time.sleep(0.1)
