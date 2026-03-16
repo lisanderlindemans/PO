@@ -5,7 +5,8 @@ window.noodStop = function () {
     "noodstop": true
   }
 
-  sendCommand(JSON.stringify(json));
+  const ws = new WebSocket("ws://192.168.4.1/connect-websocket");
+  ws.send(JSON.stringify(json))
 
   setState("ESTOP");
   render();
