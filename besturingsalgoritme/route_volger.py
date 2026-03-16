@@ -1,5 +1,6 @@
 import time
 from wifi_verbinding import noodstop, debug
+from besturing import draai_links, draai_rechts, rijd_rechtdoor
 
 # Richtingen
 NOORD = 0
@@ -37,16 +38,16 @@ def draai_naar(richting):
     if verschil_richting == 1:
         debug("Step: Draai naar rechts")
 
-        draai("rechts")
+        draai_rechts()
     elif verschil_richting == 2:
         debug("Step: keer om")
 
-        draai("rechts")
-        draai("rechts")
+        draai_rechts()
+        draai_rechts()
     elif verschil_richting == 3:
         debug("Step: Draai naar links")
 
-        draai("links")
+        draai_links()
     
     huidige_richting = richting
         
@@ -64,7 +65,7 @@ def volg_route(route, groenpunten):
 
         draai_naar(richting)
 
-        rij_rechtdoor()
+        rijd_rechtdoor()
 
         if volgende in groenpunten:
             debug("Step: Toren plaatsen")
