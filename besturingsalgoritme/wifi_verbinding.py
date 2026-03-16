@@ -23,8 +23,6 @@ def start_wifi():
 
     wifi.radio.start_ap(ssid=SSID, password=PASSWORD)
 
-    debug("My IP address is", wifi.radio.ipv4_address_ap)
-
     pool = socketpool.SocketPool(wifi.radio)
     server = Server(pool, "/static", debug=True)
 
@@ -38,7 +36,7 @@ def start_wifi():
         websocket = Websocket(request)
         return websocket
 
-    server.start(str(wifi.radio.ipv4_address_ap))
+    server.start(str(wifi.radio.ipv4_address_ap), 80)
 
 def wifi_loop():
     global route_data
