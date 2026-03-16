@@ -1,13 +1,12 @@
 window.noodStop = function () {
-  if (getState() === "TIMEUP" || getState() === "PARKED") return;
+  if (window.getState() === "TIMEUP" || window.getState() === "PARKED") return;
 
   const json = { 
     "noodstop": true
   }
 
-  const ws = new WebSocket("ws://192.168.4.1/connect-websocket");
-  ws.send(JSON.stringify(json))
+  window.sendCommand(JSON.stringify(json));
 
-  setState("ESTOP");
-  render();
+  window.setState("ESTOP");
+  window.render();
 }
