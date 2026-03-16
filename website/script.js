@@ -436,11 +436,15 @@ function sendCommand(command) {
 }
 
 function setState(value) {
-  state = value
+  state = value;
 }
 
 function getState() {
-  return state
+  return state;
 }
 
-export { render, setState, getState };
+window.render = render;
+window.setState = setState;
+window.getState = getState;
+window.sendCommand = sendCommand;
+window.connect_socket = connect_socket;
