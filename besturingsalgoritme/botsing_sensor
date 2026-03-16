@@ -35,5 +35,5 @@ def botsing_sensor_loop():
             BOTSING_COUNTER = 0
 
         if BOTSING_COUNTER >= BOTSING_MIN_METINGEN:
-            debug("Botsing gedetecteerd!")
+            print("Botsing gedetecteerd!")
             # hier motoren stoppen: motor_stop()
