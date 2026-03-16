@@ -1,10 +1,18 @@
 import time
+from wifi_verbinding import noodstop, debug
 
 # Richtingen
 NOORD = 0
 OOST = 1
 ZUID = 2
 WEST = 3
+
+richting_namen = {
+    NOORD: "NOORD",
+    OOST: "OOST",
+    ZUID: "ZUID",
+    WEST: "WEST"
+}
 
 huidige_richting = WEST
 
@@ -27,28 +35,39 @@ def draai_naar(richting):
     verschil_richting = (richting - huidige_richting) % 4
     
     if verschil_richting == 1:
+        debug("Step: Draai naar rechts")
+
         draai("rechts")
     elif verschil_richting == 2:
+        debug("Step: keer om")
+
         draai("rechts")
         draai("rechts")
     elif verschil_richting == 3:
+        debug("Step: Draai naar links")
+
         draai("links")
     
     huidige_richting = richting
         
-
 def volg_route(route, groenpunten):
     for i in range(len(route) - 1):
+        if noodstop:
+            debug("Noodstop ingedrukt, exiting code")
+            exit()
         huidige = route[i]
+        debug("Huidige positie: x=" + huidige[0] + ", y=" + huidige[1])
         volgende = route[i + 1]
 
         richting = bepaal_richting(huidige, volgende)
+        debug("Nieuwe richting: " + richting_namen[richting])
 
         draai_naar(richting)
 
         rij_rechtdoor()
 
         if volgende in groenpunten:
+            debug("Step: Toren plaatsen")
             plaats_toren()
         
         time.sleep(0.1)

@@ -434,3 +434,13 @@ function sendCommand(command) {
         alert("Not connected to the PICO")
     }
 }
+
+function setState(value) {
+  state = value
+}
+
+function getState() {
+  return state
+}
+
+export { render, setState, getState };

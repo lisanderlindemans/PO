@@ -12,7 +12,7 @@
   <div id="topBar">
     <a href="../index.html" class="active">Home</a>
     <a href="./snelste_route/snelste_route.html">Snelste route</a>
-    <button onclick="noodStop()">NOODSTOP</button>
+    <button id="noodBtnTop">NOODSTOP</button>
   </div>
 
   <h1>Robotwagen Webinterface</h1>
@@ -52,7 +52,7 @@
       <button onclick="connect_socket()">Connect</button>
 
       <div class="muted" style="margin-top:6px;">
-        Tip: verbind eerst met de wifi van de Pico, open dan deze pagina via het IP-adres, en klik daarna Connect.
+        Verbind eerst met de wifi van de Pico, open dan deze pagina via het IP-adres en klik daarna Connect.
       </div>
     </div>
   </div>
@@ -91,6 +91,6 @@
     </div>
   </div>
 
-  <script src="../shared.js"></script>
-  <script src="script.js"></script>
+  <script type="module" src="../shared.js"></script>
+  <script type="module" src="script.js"></script>
 </body>

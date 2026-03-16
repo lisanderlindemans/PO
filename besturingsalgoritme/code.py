@@ -1,15 +1,8 @@
 import time
 import board
 from analogio import AnalogIn
-from wifi_verbinding import wifi_loop, start_wifi, route_data
+from wifi_verbinding import wifi_loop, start_wifi, route_data, debug
 from route_volger import volg_route
-
-# DEBUG MODE
-DEBUG = True
-
-def debug(s):
-    if DEBUG:
-        print(s)
 
 start_wifi()
 

@@ -3,18 +3,27 @@ import wifi
 from adafruit_httpserver import Server, Request, GET, Websocket
 import json
 
+# DEBUG MODE
+DEBUG = True
+
+def debug(s):
+    if DEBUG:
+        print(s)
+
 SSID = "PICO-TEAM-106"
 PASSWORD = "TmV2CA1x0z39oipbI47A"
 
 server = None
 websocket = None
+route_data = None
+noodstop = False
 
 def start_wifi():
     global server
 
     wifi.radio.start_ap(ssid=SSID, password=PASSWORD)
 
-    print("My IP address is", wifi.radio.ipv4_address_ap)
+    debug("My IP address is", wifi.radio.ipv4_address_ap)
 
     pool = socketpool.SocketPool(wifi.radio)
     server = Server(pool, "/static", debug=True)
@@ -33,6 +42,7 @@ def start_wifi():
 
 def wifi_loop():
     global route_data
+    global noodstop
 
     server.poll()
 
@@ -40,9 +50,14 @@ def wifi_loop():
         data = websocket.receive(fail_silently=True)
 
         if data is not None:
-            print(data)
+            debug(data)
 
             try:
-                route_data = json.loads(data)
+                data_json = json.loads(data)
+
+                if data_json.get("noodstop"):
+                    noodstop = True
+                else:
+                    route_data = json.loads(data)
             except Exception as e:
                 print("JSON error:", e)
