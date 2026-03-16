@@ -27,6 +27,10 @@ while True:
 
         debug("Heenroute ontvangen:")
         debug(heenroute)
+        debug("Terugroute ontvangen:")
+        debug(terugroute)
+        debug("Groenpunten ontvangen:")
+        debug(groenpunten)
 
         heen_groen = []
         for punt in groenpunten:
