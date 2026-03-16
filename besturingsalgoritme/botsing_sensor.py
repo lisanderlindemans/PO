@@ -24,16 +24,18 @@ def meet_gemiddelde():
     else:
         return None
 
-def botsing_sensor_loop():
+def check_botsing_sensor():
     afstand = meet_gemiddelde()
     if afstand is not None:
         debug(f"Afstand: {afstand:.1f} cm")
-        # Botsing logica
+
         if afstand < BOTSING_DREMPEL:
             BOTSING_COUNTER += 1
         else:
             BOTSING_COUNTER = 0
 
         if BOTSING_COUNTER >= BOTSING_MIN_METINGEN:
-            print("Botsing gedetecteerd!")
-            # hier motoren stoppen: motor_stop()
+            debug("Botsing gedetecteerd")
+            return True
+    
+    return False

@@ -3,7 +3,6 @@ import board
 from analogio import AnalogIn
 from wifi_verbinding import wifi_loop, start_wifi, route_data, debug
 from route_volger import volg_route
-from botsing_sensor import botsing_sensor_loop
 
 start_wifi()
 
