@@ -393,7 +393,7 @@ buildGreenControls();
 buildRedControls();
 render();
 
-let socket = undefined;
+let socket;
 
 function connect_socket() {
     // Close any existing sockets

@@ -1,5 +1,5 @@
 import time
-from wifi_verbinding import noodstop, debug
+import wifi_verbinding
 from besturing import draai_links, draai_rechts, rijd_rechtdoor
 
 # Richtingen
@@ -36,16 +36,17 @@ def draai_naar(richting):
     verschil_richting = (richting - huidige_richting) % 4
     
     if verschil_richting == 1:
-        debug("Step: Draai naar rechts")
+        wifi_verbinding.debug("Step: Draai naar rechts")
 
         draai_rechts()
     elif verschil_richting == 2:
-        debug("Step: keer om")
+        wifi_verbinding.debug("Step: keer om")
 
         draai_rechts()
         draai_rechts()
+        draai_rechts()
     elif verschil_richting == 3:
-        debug("Step: Draai naar links")
+        wifi_verbinding.debug("Step: Draai naar links")
 
         draai_links()
     
@@ -60,29 +61,32 @@ def bepaal_start_richting(route):
     richting = bepaal_richting(start, volgende)
 
     huidige_richting = richting
-    debug("Start richting ingesteld op: " + richting_namen[richting])
+    wifi_verbinding.debug("Start richting ingesteld op: " + richting_namen[richting])
 
 def volg_route(route, groenpunten):
     if huidige_richting == None:
         bepaal_start_richting(route)
 
     for i in range(len(route) - 1):
-        if noodstop:
-            debug("Noodstop ingedrukt, exiting code")
+        wifi_verbinding.wifi_loop()
+
+        if wifi_verbinding.noodstop:
+            wifi_verbinding.debug("Noodstop ingedrukt, exiting code")
             exit()
+            
         huidige = route[i]
-        debug("Huidige positie: x=" + str(huidige[0]) + ", y=" + str(huidige[1]))
+        wifi_verbinding.debug("Huidige positie: x=" + str(huidige[0]) + ", y=" + str(huidige[1]))
         volgende = route[i + 1]
 
         richting = bepaal_richting(huidige, volgende)
-        debug("Nieuwe richting: " + richting_namen[richting])
+        wifi_verbinding.debug("Nieuwe richting: " + richting_namen[richting])
 
         draai_naar(richting)
 
         rijd_rechtdoor()
 
         if volgende in groenpunten:
-            debug("Step: Toren plaatsen")
+            wifi_verbinding.debug("Step: Toren plaatsen")
             #plaats_toren()
         
         time.sleep(0.1)

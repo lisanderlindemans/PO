@@ -3,11 +3,6 @@ window.noodStop = function () {
   // niets doen als het spel al voorbij is
   if (window.getState() === "TIMEUP" || window.getState() === "PARKED") return;
 
-  const json = { 
-    "noodstop": true
-  }
-  window.sendCommand(JSON.stringify(json));
-
   // status van het spel aanpassen
   window.setState("ESTOP");
 
@@ -22,4 +17,18 @@ window.noodStop = function () {
   if (typeof window.render === "function") {
     window.render();
   }
+
+  const ws = new WebSocket("ws://192.168.4.1/connect-websocket");
+  
+  ws.onopen = () => {
+    ws.send(JSON.stringify({ noodstop: true }));
+  };
+}
+
+function noodStop_snelsteroute() {
+  const ws = new WebSocket("ws://192.168.4.1/connect-websocket");
+  
+  ws.onopen = () => {
+    ws.send(JSON.stringify({ noodstop: true }));
+  };
 }

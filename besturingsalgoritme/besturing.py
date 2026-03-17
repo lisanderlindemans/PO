@@ -4,7 +4,7 @@ import analogio
 import pwmio
 import time
 from botsing_sensor import check_botsing_sensor
-from wifi_verbinding import debug
+from wifi_verbinding import debug, wifi_loop
 
 MOTOR_L_PWM = pwmio.PWMOut(board.GP19, frequency=1000)
 MOTOR_L_DIR = digitalio.DigitalInOut(board.GP20)
@@ -36,9 +36,14 @@ def draai_rechts():
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.67)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.67)
 
-    time.sleep(3)
+    start = time.monotonic()
+
+    # vervangt time.sleep(3)
+    while time.monotonic() - start < 3:
+        wifi_loop()
 
     while calculate_voltage(LDR_L.value) > GRENSWAARDE_LDR:
+        wifi_loop()
         print("Naar rechts aan het draaien!")
         time.sleep(0.1)
 
@@ -51,9 +56,13 @@ def draai_links():
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.67)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.67)
 
-    time.sleep(3)
+    start = time.monotonic()
+
+    while time.monotonic() - start < 3:
+        wifi_loop()
 
     while calculate_voltage(LDR_R.value) > GRENSWAARDE_LDR:
+        wifi_loop()
         print("Naar links aan het draaien!")
         time.sleep(0.1)
 
@@ -67,9 +76,15 @@ def rijd_rechtdoor():
     MOTOR_L_PWM.duty_cycle = MOTOR_L_DUTY
     MOTOR_R_PWM.duty_cycle = MOTOR_R_DUTY
 
-    time.sleep(1.5)
+    start = time.monotonic()
+
+    # vervangt time.sleep(1.5)
+    while time.monotonic() - start < 1.5:
+        wifi_loop()
 
     while calculate_voltage(LDR_A.value) > GRENSWAARDE_LDR:
+        wifi_loop()
+
         """if check_botsing_sensor():
             debug("Rij rechtdoor gestopt voor botsing preventie")
             exit()"""

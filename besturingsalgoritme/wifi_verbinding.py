@@ -54,10 +54,8 @@ def wifi_loop():
                 data_json = json.loads(data)
 
                 if data_json.get("noodstop"):
-                    debug("1")
                     noodstop = True
                 else:
-                    debug("2")
                     route_data = data_json
             except Exception as e:
                 print("JSON error:", e)
