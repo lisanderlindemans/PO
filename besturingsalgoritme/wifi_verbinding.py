@@ -46,8 +46,18 @@ def start_wifi():
 def wifi_loop():
     global route_data
     global noodstop
+    global websocket
 
-    server.poll()
+    try:
+        server.poll()
+    except (BrokenPipeError, OSError):
+        if websocket is not None:
+            try:
+                websocket.close()
+            except Exception:
+                pass
+            websocket = None
+        return
 
     if websocket is not None:
         data = websocket.receive(fail_silently=True)
