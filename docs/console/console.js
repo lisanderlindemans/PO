@@ -77,6 +77,7 @@ document.getElementById("clearBtn").addEventListener("click", () => {
 });
 
 window.connect_socket = connect_socket;
+// shared.js noodStop() expects these globals on every page.
 window.sendCommand = sendCommand;
 window.setState = setState;
 window.getState = getState;
