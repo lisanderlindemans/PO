@@ -54,8 +54,8 @@ def wifi_loop():
         if websocket is not None:
             try:
                 websocket.close()
-            except Exception:
-                pass
+            except (BrokenPipeError, OSError, RuntimeError) as e:
+                debug(f"Websocket close error: {e}")
             websocket = None
         return
 
