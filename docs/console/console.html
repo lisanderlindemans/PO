@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Console</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="console.css" />
+</head>
+<body>
+  <div id="topBar">
+    <a href="../index.html">Home</a>
+    <a href="../snelste_route/snelste_route.html">Snelste route</a>
+    <a href="./console.html" class="active">Console</a>
+    <button onclick="window.noodStop()">NOODSTOP</button>
+  </div>
+
+  <h1>Debug console</h1>
+
+  <div class="card">
+    <div class="controls">
+      <button id="connectBtn">Connect</button>
+      <button id="clearBtn">Leegmaken</button>
+      <label><input type="checkbox" id="autoScroll" checked> Auto-scroll</label>
+      <span class="wsBadge" id="status">Status: Disconnected</span>
+    </div>
+    <pre id="debugOutput"></pre>
+  </div>
+
+  <script src="../shared.js"></script>
+  <script src="console.js"></script>
+</body>
+</html>

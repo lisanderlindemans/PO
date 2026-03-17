@@ -1,0 +1,23 @@
+#debugOutput {
+  margin-top: 10px;
+  min-height: 300px;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: #111;
+  color: #6dff6d;
+  border-radius: 10px;
+  padding: 12px;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.controls .wsBadge {
+  margin-left: auto;
+}
