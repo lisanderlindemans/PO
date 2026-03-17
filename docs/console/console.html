@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Console</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    #consoleOutput {
+      height: 60vh;
+      overflow-y: auto;
+      background: #111;
+      color: #f4f4f4;
+      font-family: monospace;
+      border-radius: 10px;
+      padding: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div id="topBar">
+    <a href="../index.html">Home</a>
+    <a href="../snelste_route/snelste_route.html">Snelste route</a>
+    <a href="./console.html" class="active">Console</a>
+    <button onclick="noodStop_console()">NOODSTOP</button>
+  </div>
+
+  <h1>Debug Console</h1>
+
+  <div class="card">
+    <div class="muted">
+      WebSocket:
+      <span class="wsBadge" id="status">Status: Disconnected</span>
+    </div>
+    <div style="margin-top: 8px;">
+      <button onclick="connect_socket()">Connect</button>
+      <button onclick="disconnect_socket()">Disconnect</button>
+      <button onclick="clear_console()">Clear</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="consoleOutput"></div>
+  </div>
+
+  <script src="console.js"></script>
+</body>
+</html>

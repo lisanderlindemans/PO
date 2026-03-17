@@ -9,6 +9,14 @@ DEBUG = True
 def debug(s):
     if DEBUG:
         print(s)
+        if websocket is not None:
+            try:
+                if hasattr(websocket, "send_message"):
+                    websocket.send_message(str(s))
+                else:
+                    websocket.send(str(s))
+            except Exception:
+                pass
 
 SSID = "PICO-TEAM-106"
 PASSWORD = "TmV2CA1x0z39oipbI47A"
