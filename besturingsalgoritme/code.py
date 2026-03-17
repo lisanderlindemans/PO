@@ -1,29 +1,29 @@
 import time
 import board
 from analogio import AnalogIn
-from wifi_verbinding import wifi_loop, start_wifi, route_data, debug
+import wifi_verbinding
 from route_volger import volg_route
 
-start_wifi()
+wifi_verbinding.start_wifi()
 
 reftijd = time.monotonic()
 
 while True:
-    wifi_loop()
+    wifi_verbinding.wifi_loop()
 
     nu = time.monotonic()
     
-    if route_data is not None:
-        heenroute = route_data["heenroute"]
-        terugroute = route_data["terugroute"]
-        groenpunten = route_data["groenpunten"]
+    if wifi_verbinding.route_data is not None:
+        heenroute = wifi_verbinding.route_data["heenroute"]
+        terugroute = wifi_verbinding.route_data["terugroute"]
+        groenpunten = wifi_verbinding.route_data["groenpunten"]
 
-        debug("Heenroute ontvangen:")
-        debug(heenroute)
-        debug("Terugroute ontvangen:")
-        debug(terugroute)
-        debug("Groenpunten ontvangen:")
-        debug(groenpunten)
+        wifi_verbinding.debug("Heenroute ontvangen:")
+        wifi_verbinding.debug(heenroute)
+        wifi_verbinding.debug("Terugroute ontvangen:")
+        wifi_verbinding.debug(terugroute)
+        wifi_verbinding.debug("Groenpunten ontvangen:")
+        wifi_verbinding.debug(groenpunten)
 
         heen_groen = []
         for punt in groenpunten:
