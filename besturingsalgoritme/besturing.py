@@ -70,9 +70,9 @@ def rijd_rechtdoor():
     time.sleep(1.5)
 
     while calculate_voltage(LDR_A.value) > GRENSWAARDE_LDR:
-        if check_botsing_sensor():
+        """if check_botsing_sensor():
             debug("Rij rechtdoor gestopt voor botsing preventie")
-            exit()
+            exit()"""
 
         if calculate_voltage(LDR_R.value) - GRENSWAARDE_LDR > THRESHOLD_AUTOCORRECT:
             MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.4)
