@@ -52,7 +52,7 @@ function noodStop_console() {
     return;
   }
 
-  const ws = new WebSocket("ws://192.168.4.1/connect-websocket");
+  const ws = new WebSocket("ws://192.168.4.1:80/connect-websocket");
   ws.onopen = () => {
     ws.send(JSON.stringify({ noodstop: true }));
     ws.close();
