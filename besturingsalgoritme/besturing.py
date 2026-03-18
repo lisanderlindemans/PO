@@ -39,7 +39,7 @@ def meet_data():
     verschil = links - rechts
     gemiddelde = (links + rechts) / 2
 
-    print((metingnummer, links, rechts, achter, verschil, gemiddelde))
+    #print((metingnummer, links, rechts, achter, verschil, gemiddelde))
 
 def calculate_voltage(value):
     return (value * 3.3) / 65535
