@@ -1,6 +1,7 @@
 import board
 import digitalio
 import analogio
+from analogio import AnalogIn
 import pwmio
 import time
 from botsing_sensor import check_botsing_sensor
@@ -39,7 +40,7 @@ def meet_data():
     verschil = links - rechts
     gemiddelde = (links + rechts) / 2
 
-    #print((metingnummer, links, rechts, achter, verschil, gemiddelde))
+    print((metingnummer, links, rechts, achter, verschil, gemiddelde))
 
 def calculate_voltage(value):
     return (value * 3.3) / 65535
@@ -57,7 +58,7 @@ def draai_rechts():
 
     while calculate_voltage(LDR_L.value) > GRENSWAARDE_LDR:
         wifi_loop()
-        meet_data()
+        #meet_data()
         print("Naar rechts aan het draaien!")
         time.sleep(0.1)
 
@@ -77,7 +78,7 @@ def draai_links():
 
     while calculate_voltage(LDR_R.value) > GRENSWAARDE_LDR:
         wifi_loop()
-        meet_data()
+        #meet_data()
         print("Naar links aan het draaien!")
         time.sleep(0.1)
 
@@ -99,7 +100,7 @@ def rijd_rechtdoor():
 
     while calculate_voltage(LDR_A.value) > GRENSWAARDE_LDR:
         wifi_loop()
-        meet_data()
+        #meet_data()
 
         """if check_botsing_sensor():
             debug("Rij rechtdoor gestopt voor botsing preventie")
