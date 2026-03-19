@@ -28,6 +28,7 @@ MOTOR_R_DUTY = round(18000 * 1.5)
 MOTOR_L_DUTY = round(15000 * 1.5)
 
 THRESHOLD_AUTOCORRECT = 0.1
+metingnummer = 0
 
 def meet_data():
     global metingnummer
