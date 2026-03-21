@@ -52,7 +52,7 @@
       <button onclick="connect_socket()">Connect</button>
 
       <div class="muted" style="margin-top:6px;">
-        Verbind eerst met de wifi van de Pico, open dan deze pagina via het IP-adres en klik daarna Connect.
+        Verbind eerst met de wifi van de Pico, open dan deze pagina via het IP-adres en klik daarna Connect!!.
       </div>
     </div>
   </div>
@@ -87,6 +87,23 @@
         <div>Rood geraakt: <span id="redCount">0</span> → straf: <span id="redPenalty">0</span></div>
         <div>Garage bonus: <span id="garageBonus">0</span></div>
         <div>Tijdbonus: <span id="timeBonus">0</span></div>
+
+        <div style="margin-top:10px;">
+          <div class="title">Manuele interventies</div>
+          <button id="interventieMinus">−</button>
+          <span id="interventieCount">0</span>
+          <button id="interventiePlus">+</button>
+          → straf: <span id="interventiePenalty">0</span>
+        </div>
+
+        <div style="margin-top:10px;">
+          <div class="title">Herstart</div>
+          <button class="restartBtn" data-restart="0">Poging één</button>
+          <button class="restartBtn" data-restart="1">Eerste herstart</button>
+          <button class="restartBtn" data-restart="2">Tweede herstart</button>
+          <button class="restartBtn" data-restart="3">Derde herstart</button>
+          → straf: <span id="restartPenalty">0</span>
+        </div>
       </div>
     </div>
   </div>
