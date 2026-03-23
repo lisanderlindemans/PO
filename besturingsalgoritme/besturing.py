@@ -1,6 +1,7 @@
 import board
 import digitalio
 import analogio
+from analogio import AnalogIn
 import pwmio
 import time
 from botsing_sensor import check_botsing_sensor
@@ -27,6 +28,7 @@ MOTOR_R_DUTY = round(18000 * 1.5)
 MOTOR_L_DUTY = round(15000 * 1.5)
 
 THRESHOLD_AUTOCORRECT = 0.1
+metingnummer = 0
 
 def meet_data():
     global metingnummer
@@ -39,7 +41,7 @@ def meet_data():
     verschil = links - rechts
     gemiddelde = (links + rechts) / 2
 
-    #print((metingnummer, links, rechts, achter, verschil, gemiddelde))
+    print((metingnummer, links, rechts, achter, verschil, gemiddelde))
 
 def calculate_voltage(value):
     return (value * 3.3) / 65535

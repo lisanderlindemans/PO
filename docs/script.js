@@ -10,7 +10,7 @@ function applyOrientation(points, orientation) {
 // Mogelijke states:
 // READY  : klaar om te starten
 // RUNNING: timer loopt
-// ESTOP  : noodstop
+// NOODSTOP  : noodstop
 // PARKED : in garage
 // TIMEUP : tijd is op
 let state = "READY";
@@ -52,6 +52,23 @@ const startBtn = document.getElementById("startBtn");
 const resetBtn = document.getElementById("resetBtn");
 const parkBtn = document.getElementById("parkBtn");
 
+const interventieCountEl = document.getElementById("interventieCount");
+const interventiePenaltyEl = document.getElementById("interventiePenalty");
+const restartPenaltyEl = document.getElementById("restartPenalty");
+
+let interventies = 0;
+let restartLevel = 0; 
+
+function computeInterventiePenalty() {
+  return interventies * 50;
+}
+
+function computeRestartPenalty() {
+  if (restartLevel === 2) return 50;
+  if (restartLevel === 3) return 100;
+  return 0;
+}
+
 function allGreensPlaced() {
   return greens.every(g => g.level !== null);
 }
@@ -77,7 +94,7 @@ function computeTimeBonus() {
 }
 
 function computeTotalScore() {
-  return computeGreensScore() - computeRedPenalty() + computeGarageBonus() + computeTimeBonus();
+  return computeGreensScore()- computeRedPenalty()- computeInterventiePenalty()- computeRestartPenalty()+ computeGarageBonus()+ computeTimeBonus();
 }
 
 function applyAction(action, direction) {
@@ -129,7 +146,7 @@ function setTimerRunning(running) {
 }
 
 function timerTick() {
-  if (!(state === "RUNNING" || state === "ESTOP")) return;
+  if (!(state === "RUNNING" || state === "NOODSTOP")) return;
 
   remaining--;
 
@@ -154,7 +171,8 @@ function resetGame() {
   state = "READY";
   remaining = GAME_SECONDS;
   parkedInGarage = false;
-
+  interventies = 0;
+  restartLevel = 0;
   redTouched.clear();
   greens.forEach(g => { g.level = null; g.orientation = "upright"; g.points = 0; });
 
@@ -223,7 +241,7 @@ function toggleParked() {
     else if (prevState !== "READY") nextState = "RUNNING";
     else nextState = "READY";
 
-    nextTimerRunning = (nextState === "RUNNING" || nextState === "ESTOP");
+    nextTimerRunning = (nextState === "RUNNING" || nextState === "NOODSTOP");
   }
 
   const action = {
@@ -354,6 +372,15 @@ function updateButtonHighlights() {
     const redBtn = document.querySelector(`button[data-red='${id}']`);
     if (redBtn) redBtn.classList.add("active-red");
   }
+  document.querySelectorAll(".restartBtn").forEach(btn => {
+    btn.classList.remove("active-restart");
+  });
+  const activeRestartBtn = document.querySelector(
+    `.restartBtn[data-restart='${restartLevel}']`
+  );
+  if (activeRestartBtn) {
+      activeRestartBtn.classList.add("active-restart");
+  }
 
 
   if (parkedInGarage) parkBtn.classList.add("active-park");
@@ -368,12 +395,15 @@ function render() {
   redPenaltyEl.textContent = `-${computeRedPenalty()}`;
   garageBonusEl.textContent= `${computeGarageBonus()}`;
   timeBonusEl.textContent  = `${computeTimeBonus()}`;
+  interventieCountEl.textContent = interventies;
+  interventiePenaltyEl.textContent = `-${computeInterventiePenalty()}`;
+  restartPenaltyEl.textContent = `-${computeRestartPenalty()}`;
 
   statusEl.textContent = state;
 
   if (state === "READY")   statusHintEl.textContent = "Klaar om te starten.";
   else if (state === "RUNNING") statusHintEl.textContent = "Timer loopt.";
-  else if (state === "ESTOP")   statusHintEl.textContent = "NOODSTOP actief (timer loopt door).";
+  else if (state === "NOODSTOP")   statusHintEl.textContent = "NOODSTOP actief (timer loopt door).";
   else if (state === "PARKED")  statusHintEl.textContent = "Geparkeerd: timer gestopt, score vastgelegd.";
   else if (state === "TIMEUP")  statusHintEl.textContent = "Tijd is op.";
 
@@ -388,6 +418,23 @@ function render() {
 startBtn.addEventListener("click", startGame);
 resetBtn.addEventListener("click", resetGame);
 parkBtn.addEventListener("click", toggleParked);
+
+document.getElementById("interventiePlus").addEventListener("click", () => {
+  interventies++;
+  render();
+});
+
+document.getElementById("interventieMinus").addEventListener("click", () => {
+  if (interventies > 0) interventies--;
+  render();
+});
+
+document.querySelectorAll(".restartBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    restartLevel = parseInt(btn.dataset.restart);
+    render();
+  });
+});
 
 buildGreenControls();
 buildRedControls();

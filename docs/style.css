@@ -26,6 +26,13 @@ button:disabled { opacity:0.5; cursor:not-allowed; }
 .active-ori  { background:#3498db !important; color:white; border:none; }
 .active-red  { background:#e74c3c !important; color:white; border:none; }
 .active-park { background:#2ecc71 !important; color:white; border:none; }
+.active-restart { background:#304659 !important; color:white; border:none; }
+
+.restartBtn.active-restart {
+  background: #f39c12 !important;
+  color: white;
+  border: none;
+}
 
 .pill { display:inline-block; padding:4px 10px; border-radius:999px; background:#eee; font-size:12px; margin-left:6px; }
 .greenHeader { display:flex; justify-content:space-between; align-items:center; gap:10px; }
