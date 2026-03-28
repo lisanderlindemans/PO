@@ -51,14 +51,9 @@ def start_wifi():
 def wifi_loop():
     global route_data
     global noodstop
-<<<<<<< HEAD
-    
-    debug("test")
-=======
     global manual_mode
     global manual_action
     global manual_throttle
->>>>>>> 95c0beeca66a1ad455c16e8bb0b7bcf1c037fca0
 
     server.poll()
 
