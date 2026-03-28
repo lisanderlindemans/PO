@@ -6,6 +6,9 @@ import json
 # DEBUG MODE
 DEBUG = True
 
+manual_action = None
+manual_throttle = 0
+
 def debug(s):
     if DEBUG:
         print(s)
@@ -25,6 +28,8 @@ server = None
 websocket = None
 route_data = None
 noodstop = False
+manual_mode = False
+manual_throttle = 0
 
 def start_wifi():
     global server
@@ -49,6 +54,9 @@ def start_wifi():
 def wifi_loop():
     global route_data
     global noodstop
+    global manual_mode
+    global manual_action
+    global manual_throttle
 
     server.poll()
 
@@ -61,9 +69,23 @@ def wifi_loop():
             try:
                 data_json = json.loads(data)
 
-                if data_json.get("noodstop"):
+                if data_json.get("type") == "mode":
+                    if data_json.get("value") == "manuel":
+                        manual_mode = True
+                    else:
+                        manual_mode = False
+                
+                elif data_json.get("type") == "manual_control":
+                    if "action" in data_json:
+                        manual_action = data_json.get("action")
+                    elif "throttle" in data_json:
+                        manual_throttle = int(data_json.get("throttle"))
+                elif data_json.get("type") == "manual_control":
+                    manual_action = data_json.get("action")
+                elif data_json.get("noodstop"):
                     noodstop = True
                 else:
                     route_data = data_json
+
             except Exception as e:
                 print("JSON error:", e)
