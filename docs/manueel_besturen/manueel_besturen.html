@@ -25,7 +25,7 @@
         </div>
 
         <div class="controls">
-            <button class="arrow-btn" onclick="links()"><</button>
+            <button class="arrow-btn" onclick="links()" disabled><</button>
             <input 
                 type="range" 
                 min="-100" 
@@ -34,8 +34,9 @@
                 id="throttle" 
                 step="1"
                 orient="vertical"
+                disabled
             >
-            <button class="arrow-btn" onclick="rechts()">></button>
+            <button class="arrow-btn" onclick="rechts()" disabled>></button>
         </div>
 
         <p>Throttle: <span id="value">0</span></p>
