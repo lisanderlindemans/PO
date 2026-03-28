@@ -11,10 +11,7 @@ def debug(s):
         print(s)
         if websocket is not None:
             try:
-                if hasattr(websocket, "send_message"):
-                    websocket.send_message(str(s))
-                else:
-                    websocket.send(str(s))
+                websocket.send_message(str(s)) # als error, vervang door send
             except Exception:
                 pass
 
@@ -49,6 +46,8 @@ def start_wifi():
 def wifi_loop():
     global route_data
     global noodstop
+    
+    debug("test")
 
     server.poll()
 

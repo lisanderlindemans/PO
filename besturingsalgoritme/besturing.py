@@ -59,14 +59,14 @@ def draai_rechts():
 
     while calculate_voltage(LDR_L.value) > GRENSWAARDE_LDR:
         wifi_loop()
-        #meet_data()
+        meet_data()
         print("Naar rechts aan het draaien!")
         time.sleep(0.1)
 
     MOTOR_R_DIR.value = True
     MOTOR_R_PWM.duty_cycle = 0
     MOTOR_L_PWM.duty_cycle = 0
-    
+
 def draai_links():
     MOTOR_L_DIR.value = False
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.67)
@@ -79,7 +79,7 @@ def draai_links():
 
     while calculate_voltage(LDR_R.value) > GRENSWAARDE_LDR:
         wifi_loop()
-        #meet_data()
+        meet_data()
         print("Naar links aan het draaien!")
         time.sleep(0.1)
 
@@ -101,7 +101,7 @@ def rijd_rechtdoor():
 
     while calculate_voltage(LDR_A.value) > GRENSWAARDE_LDR:
         wifi_loop()
-        #meet_data()
+        meet_data()
 
         """if check_botsing_sensor():
             debug("Rij rechtdoor gestopt voor botsing preventie")
@@ -118,7 +118,7 @@ def rijd_rechtdoor():
             MOTOR_R_PWM.duty_cycle = MOTOR_R_DUTY
 
         time.sleep(0.1)
-        
+
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_R_PWM.duty_cycle = 0
 
