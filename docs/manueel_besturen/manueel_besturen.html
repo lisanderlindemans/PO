@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <title>Manuele Besturing</title>
+
+    <link rel="stylesheet" href="manueel_besturen.css"/>
+    <link rel="stylesheet" href="../style.css"/>
+</head>
+<body>
+    <div id="topBar">
+        <a href="../index.html">Home</a>
+        <a href="../snelste_route/snelste_route.html">Snelste route</a>
+        <a href="../console/console.html">Console</a>
+        <a href="./manueel_besturen.html" class="active">Manuele Besturing</a>
+        <button onclick="noodStop_snelsteroute()">NOODSTOP</button>
+    </div>
+
+    <div class="card">
+        <div class="manual-toggle">
+            <label class="switch">
+                <input type="checkbox" id="manualSwitch" class="manual-switch">
+                <span class="slider-round"></span>
+            </label>
+            <span id="toggleLabel" class="toggle-label">Manuele Besturing: OFF</span>
+        </div>
+
+        <div class="controls">
+            <button class="arrow-btn" onclick="links()" disabled><</button>
+            <input 
+                type="range" 
+                min="-100" 
+                max="100" 
+                value="0" 
+                id="throttle" 
+                step="1"
+                orient="vertical"
+                disabled
+            >
+            <button class="arrow-btn" onclick="rechts()" disabled>></button>
+        </div>
+
+        <p>Throttle: <span id="value">0</span></p>
+    </div>
+
+    <script src="manueel_besturen.js"></script>
+</body>
+</html>
