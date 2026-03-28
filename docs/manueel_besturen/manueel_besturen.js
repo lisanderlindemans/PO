@@ -1,7 +1,7 @@
 const slider = document.getElementById("throttle");
 const output = document.getElementById("value");
 
-const ws = new WebSocket("ws://192.168.4.1/connect-websocket");
+let ws;
 
 slider.addEventListener("input", () => {
   let val = parseInt(slider.value);
@@ -36,6 +36,7 @@ const toggleLabel = document.getElementById('toggleLabel');
 manualSwitch.addEventListener('change', function() {
     if(this.checked) {
         toggleLabel.textContent = "Manuele Besturing: ON";
+        ws = new WebSocket("ws://192.168.4.1/connect-websocket");
         enableManualControl();
     } else {
         toggleLabel.textContent = "Manuele Besturing: OFF";
