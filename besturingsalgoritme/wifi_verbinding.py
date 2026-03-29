@@ -67,7 +67,7 @@ def wifi_loop():
                 data_json = json.loads(data)
 
                 if data_json.get("type") == "mode":
-                    if data_json.get("value") == "manuel":
+                    if data_json.get("value") == "manual":
                         manual_mode = True
                     else:
                         manual_mode = False
@@ -76,9 +76,7 @@ def wifi_loop():
                     if "action" in data_json:
                         manual_action = data_json.get("action")
                     elif "throttle" in data_json:
-                        manual_throttle = int(data_json.get("throttle"))
-                elif data_json.get("type") == "manual_control":
-                    manual_action = data_json.get("action")
+                        manual_throttle = int(data_json.get("throttle"))    
                 elif data_json.get("noodstop"):
                     noodstop = True
                 else:

@@ -3,6 +3,8 @@ const output = document.getElementById("value");
 
 let ws;
 
+let debounceTimeout = null;
+
 slider.addEventListener("input", () => {
   let val = parseInt(slider.value);
 
@@ -10,10 +12,17 @@ slider.addEventListener("input", () => {
 
   output.textContent = val;
 
-  ws.send(JSON.stringify({
-    type: "manual_control",
-    throttle: val
-  }));
+  // Zorgen dat wifi niet gespammed word
+  if (debounceTimeout) {
+    clearTimeout(debounceTimeout);
+  }
+
+  debounceTimeout = setTimeout(() => {
+    ws.send(JSON.stringify({
+      type: "manual_control",
+      throttle: val
+    }));
+  }, 50);
 });
 
 function links() {
@@ -35,11 +44,17 @@ const toggleLabel = document.getElementById('toggleLabel');
 
 manualSwitch.addEventListener('change', function() {
     if(this.checked) {
-        toggleLabel.textContent = "Manuele Besturing: ON";
+        toggleLabel.textContent = "Manuele Besturing: Connecting";
         ws = new WebSocket("ws://192.168.4.1/connect-websocket");
-        enableManualControl();
+
+        ws.onopen = () => {
+          enableManualControl();
+          toggleLabel.textContent = "Manuele Besturing: ON";
+        };
     } else {
         toggleLabel.textContent = "Manuele Besturing: OFF";
+        ws.close();
+        ws = null;
         disableManualControl();
     }
 });

@@ -1,6 +1,7 @@
 import board
 import digitalio
 import pwmio
+import time
 from wifi_verbinding import debug
 
 MOTOR_L_PWM = pwmio.PWMOut(board.GP19, frequency=1000)
@@ -20,6 +21,8 @@ def draai_manueel_rechts():
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.67)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.67)
 
+    time.sleep(0.1)
+
     MOTOR_R_DIR.value = True
     MOTOR_R_PWM.duty_cycle = 0
     MOTOR_L_PWM.duty_cycle = 0
@@ -30,6 +33,8 @@ def draai_manueel_links():
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.67)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.67)
 
+    time.sleep(0.1)
+
     MOTOR_L_DIR.value = True
     MOTOR_R_PWM.duty_cycle = 0
     MOTOR_L_PWM.duty_cycle = 0
@@ -38,14 +43,18 @@ def rijd_manueel_rechtdoor(factor=1.0):
     debug("Manueel rechtdoor aan het rijden met " + str(factor * 100) + "%")
     MOTOR_L_DIR.value = True
     MOTOR_R_DIR.value = True
+
+    time.sleep(0.1)
         
     MOTOR_L_PWM.duty_cycle = int(MOTOR_L_DUTY * factor)
     MOTOR_R_PWM.duty_cycle = int(MOTOR_L_DUTY * factor)
 
-def rijd_manueel_achteruit(factor=-1.0):
+def rijd_manueel_achteruit(factor=1.0):
     debug("Manueel achteruit aan het rijden met " + str(factor * 100) + "%")
     MOTOR_L_DIR.value = False
     MOTOR_R_DIR.value = False
+
+    time.sleep(0.1)
 
     MOTOR_L_PWM.duty_cycle = int(MOTOR_L_DUTY * factor)
     MOTOR_R_PWM.duty_cycle = int(MOTOR_L_DUTY * factor)
