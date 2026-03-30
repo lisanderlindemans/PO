@@ -3,17 +3,23 @@ import digitalio
 import pwmio
 import time
 import wifi_verbinding
+from besturing import MOTOR_L_DIR, MOTOR_L_PWM, MOTOR_L_DUTY, MOTOR_R_DIR, MOTOR_R_PWM, MOTOR_R_DUTY
 
-MOTOR_L_PWM = pwmio.PWMOut(board.GP19, frequency=1000)
-MOTOR_L_DIR = digitalio.DigitalInOut(board.GP20)
-MOTOR_L_DIR.direction = digitalio.Direction.OUTPUT
+last_debug_times = {
+    "links": 0,
+    "rechts": 0,
+    "rechtdoor": 0,
+    "achteruit": 0
+}
 
-MOTOR_R_PWM = pwmio.PWMOut(board.GP21, frequency=1000)
-MOTOR_R_DIR = digitalio.DigitalInOut(board.GP22)
-MOTOR_R_DIR.direction = digitalio.Direction.OUTPUT
+DEBUG_INTERVAL = 5
 
-MOTOR_R_DUTY = round(18000 * 1.5)
-MOTOR_L_DUTY = round(15000 * 1.5)
+def debug_met_interval(key, message):
+    huidige_tijd = time.monotonic()
+    
+    if huidige_tijd - last_debug_times[key] >= DEBUG_INTERVAL:
+        wifi_verbinding.debug(message)
+        last_debug_times[key] = huidige_tijd
 
 def manueel_loop():
     if wifi_verbinding.manual_mode:
@@ -40,19 +46,19 @@ def manueel_loop():
         return False
 
 def draai_manueel_rechts():
-    wifi_verbinding.debug("Manueel naar rechts aan het draaien")
+    debug_met_interval("rechts", "Manueel naar rechts aan het draaien")
     MOTOR_R_DIR.value = False
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.67)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.67)
 
-    time.sleep(0.)
+    time.sleep(0.05)
 
     MOTOR_R_DIR.value = True
     MOTOR_R_PWM.duty_cycle = 0
     MOTOR_L_PWM.duty_cycle = 0
 
 def draai_manueel_links():
-    wifi_verbinding.debug("Manueel naar links aan het draaien")
+    debug_met_interval("links", "Manueel naar links aan het draaien")
     MOTOR_L_DIR.value = False
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.67)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.67)
@@ -64,7 +70,7 @@ def draai_manueel_links():
     MOTOR_L_PWM.duty_cycle = 0
 
 def rijd_manueel_rechtdoor(factor=1.0):
-    wifi_verbinding.debug("Manueel rechtdoor aan het rijden met " + str(factor * 100) + "%")
+    debug_met_interval("rechtdoor", "Manueel rechtdoor aan het rijden met " + str(factor * 100) + "%")
     MOTOR_L_DIR.value = True
     MOTOR_R_DIR.value = True
         
@@ -72,7 +78,7 @@ def rijd_manueel_rechtdoor(factor=1.0):
     MOTOR_R_PWM.duty_cycle = int(MOTOR_R_DUTY * factor)
 
 def rijd_manueel_achteruit(factor=1.0):
-    wifi_verbinding.debug("Manueel achteruit aan het rijden met " + str(factor * 100) + "%")
+    debug_met_interval("achteruit", "Manueel achteruit aan het rijden met " + str(factor * 100) + "%")
     MOTOR_L_DIR.value = False
     MOTOR_R_DIR.value = False
 

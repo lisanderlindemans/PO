@@ -39,6 +39,51 @@ function rechts(){
   }));
 }
 
+let intervalLinks = null;
+let intervalRechts = null;
+
+const btnLinks = document.querySelectorAll('.arrow-btn')[0];
+
+btnLinks.addEventListener("mousedown", () => {
+  intervalLinks = setInterval(() => {
+    ws.send(JSON.stringify({
+      type: "manual_control",
+      action: "links"
+    }));
+  }, 100);
+});
+
+btnLinks.addEventListener("mouseup", stopLinks);
+btnLinks.addEventListener("mouseleave", stopLinks);
+
+function stopLinks() {
+  if (intervalLinks) {
+    clearInterval(intervalLinks);
+    intervalLinks = null;
+  }
+}
+
+const btnRechts = document.querySelectorAll('.arrow-btn')[1];
+
+btnRechts.addEventListener("mousedown", () => {
+  intervalRechts = setInterval(() => {
+    ws.send(JSON.stringify({
+      type: "manual_control",
+      action: "rechts"
+    }));
+  }, 100);
+});
+
+btnRechts.addEventListener("mouseup", stopRechts);
+btnRechts.addEventListener("mouseleave", stopRechts);
+
+function stopRechts() {
+  if (intervalRechts) {
+    clearInterval(intervalRechts);
+    intervalRechts = null;
+  }
+}
+
 const manualSwitch = document.getElementById('manualSwitch');
 const toggleLabel = document.getElementById('toggleLabel');
 

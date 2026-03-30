@@ -7,6 +7,11 @@ import time
 from botsing_sensor import check_botsing_sensor
 from wifi_verbinding import debug, wifi_loop
 
+global MOTOR_L_PWM
+global MOTOR_L_DIR
+global MOTOR_R_PWM
+global MOTOR_R_DIR
+
 MOTOR_L_PWM = pwmio.PWMOut(board.GP19, frequency=1000)
 MOTOR_L_DIR = digitalio.DigitalInOut(board.GP20)
 MOTOR_L_DIR.direction = digitalio.Direction.OUTPUT
@@ -24,10 +29,13 @@ GRENSWAARDE_LDR = (
     2.9  # LDR-voltage moet onder deze waarde liggen om zwart te detecteren
 )
 
+global MOTOR_R_DUTY
+global MOTOR_L_DUTY
+
 MOTOR_R_DUTY = round(18000 * 1.5)
 MOTOR_L_DUTY = round(15000 * 1.5)
 
-THRESHOLD_AUTOCORRECT = 0.1
+THRESHOLD_AUTOCORRECT = 0.027177
 metingnummer = 0
 
 def meet_data():
@@ -59,7 +67,7 @@ def draai_rechts():
     while calculate_voltage(LDR_L.value) > GRENSWAARDE_LDR:
         wifi_loop()
         meet_data()
-        print("Naar rechts aan het draaien!")
+        debug("Naar rechts aan het draaien!")
         time.sleep(0.1)
 
     MOTOR_R_DIR.value = True
@@ -79,7 +87,7 @@ def draai_links():
     while calculate_voltage(LDR_R.value) > GRENSWAARDE_LDR:
         wifi_loop()
         meet_data()
-        print("Naar links aan het draaien!")
+        debug("Naar links aan het draaien!")
         time.sleep(0.1)
 
     MOTOR_L_DIR.value = True
@@ -107,10 +115,10 @@ def rijd_rechtdoor():
             exit()"""
 
         if calculate_voltage(LDR_R.value) - GRENSWAARDE_LDR > THRESHOLD_AUTOCORRECT:
-            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.4)
+            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.6)
 
         elif calculate_voltage(LDR_L.value) - GRENSWAARDE_LDR > THRESHOLD_AUTOCORRECT:
-            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.4)
+            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.6)
 
         else:
             MOTOR_L_PWM.duty_cycle = MOTOR_L_DUTY

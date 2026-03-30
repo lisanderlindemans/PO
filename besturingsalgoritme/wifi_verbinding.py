@@ -69,8 +69,10 @@ def wifi_loop():
                 if data_json.get("type") == "mode":
                     if data_json.get("value") == "manual":
                         manual_mode = True
+                        debug("Manual mode on")
                     else:
                         manual_mode = False
+                        debug("Manual mode off")
                 
                 elif data_json.get("type") == "manual_control":
                     if "action" in data_json:
