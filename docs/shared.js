@@ -1,4 +1,5 @@
-const SHARED_WS_URL = "ws://192.168.4.1:80/connect-websocket";
+const SHARED_WS_HOST = location.hostname || "192.168.4.1";
+const SHARED_WS_URL = `ws://${SHARED_WS_HOST}:80/connect-websocket`;
 const CONNECT_WANTED_KEY = "po.connectWanted";
 const CONSOLE_LOG_KEY = "po.consoleLogs";
 

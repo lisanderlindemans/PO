@@ -39,13 +39,15 @@ function rechts(){
 
 const manualSwitch = document.getElementById('manualSwitch');
 const toggleLabel = document.getElementById('toggleLabel');
+let manualRequested = false;
 
 manualSwitch.addEventListener('change', function() {
     if(this.checked) {
+        manualRequested = true;
         toggleLabel.textContent = "Manuele Besturing: Connecting";
         window.connect_socket();
-        enableManualControl();
     } else {
+        manualRequested = false;
         toggleLabel.textContent = "Manuele Besturing: OFF";
         disableManualControl();
     }
@@ -74,8 +76,11 @@ function disableManualControl() {
 }
 
 window.__poShared.addStatusListener((sharedStatus) => {
-  if (!manualSwitch.checked) return;
-  if (sharedStatus === "connected") toggleLabel.textContent = "Manuele Besturing: ON";
+  if (!manualSwitch.checked && !manualRequested) return;
+  if (sharedStatus === "connected") {
+    if (manualRequested) enableManualControl();
+    toggleLabel.textContent = "Manuele Besturing: ON";
+  }
   else if (sharedStatus === "connecting") toggleLabel.textContent = "Manuele Besturing: Connecting";
   else toggleLabel.textContent = "Manuele Besturing: Disconnected";
 });

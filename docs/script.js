@@ -106,6 +106,7 @@ function loadGameState() {
       const elapsed = Math.floor((Date.now() - lastUpdateMs) / 1000);
       if (elapsed > 0) {
         remaining = Math.max(0, remaining - elapsed);
+        lastUpdateMs = Date.now();
         if (remaining <= 0) state = "TIMEUP";
       }
     }
@@ -180,6 +181,8 @@ function applyAction(action, direction) {
   }
 }
 
+// immediateTick=false wordt gebruikt bij state-herstel na paginaswitch:
+// de timer moet dan verder lopen zonder direct 1 extra seconde af te trekken.
 function setTimerRunning(running, immediateTick = true) {
   const isCurrentlyRunning = (timerHandle !== null);
 
