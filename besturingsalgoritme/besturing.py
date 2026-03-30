@@ -133,9 +133,9 @@ def rijd_rechtdoor():
 
 pwm = pwmio.PWMOut(board.GP13, frequency=50)
 servo_motor = servo.Servo(pwm, min_pulse=350, max_pulse=2650)
-'''
-door tandwiel verdubbeld hoek
-'''
+
+#door tandwiel verdubbeld hoek
+
 hoek = 0
 #servo_motor.angle = 0 zet dit in beging
 def servo_draai():
