@@ -40,6 +40,7 @@ THRESHOLD_AUTOCORRECT = 0.027177
 metingnummer = 0
 
 def meet_data():
+    global metingnummer
     metingnummer += 1
 
     links = LDR_L.value
