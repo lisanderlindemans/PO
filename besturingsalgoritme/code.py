@@ -2,6 +2,7 @@ import time
 import board
 from analogio import AnalogIn
 import wifi_verbinding
+from wifi_verbinding import debug
 from route_volger import volg_route
 from manueel_besturing import manueel_loop
 
@@ -22,12 +23,12 @@ while True:
         terugroute = wifi_verbinding.route_data["terugroute"]
         groenpunten = wifi_verbinding.route_data["groenpunten"]
 
-        wifi_verbinding.debug("Heenroute ontvangen:")
-        wifi_verbinding.debug(heenroute)
-        wifi_verbinding.debug("Terugroute ontvangen:")
-        wifi_verbinding.debug(terugroute)
-        wifi_verbinding.debug("Groenpunten ontvangen:")
-        wifi_verbinding.debug(groenpunten)
+        debug("Heenroute ontvangen:")
+        debug(heenroute)
+        debug("Terugroute ontvangen:")
+        debug(terugroute)
+        debug("Groenpunten ontvangen:")
+        debug(groenpunten)
 
         heen_groen = []
         for punt in groenpunten:

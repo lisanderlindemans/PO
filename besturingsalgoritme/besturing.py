@@ -5,7 +5,7 @@ from analogio import AnalogIn
 import pwmio
 import time
 from botsing_sensor import check_botsing_sensor
-from wifi_verbinding import debug, wifi_loop
+from wifi_verbinding import wifi_loop, debug
 
 global MOTOR_L_PWM
 global MOTOR_L_DIR

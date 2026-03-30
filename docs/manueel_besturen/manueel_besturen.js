@@ -89,8 +89,8 @@ let manualRequested = false;
 manualSwitch.addEventListener('change', function() {
     if(this.checked) {
         manualRequested = true;
-        toggleLabel.textContent = "Manuele Besturing: Connecting";
-        window.connect_socket();
+        toggleLabel.textContent = "Manuele Besturing: ON";
+        enableManualControl()
     } else {
         manualRequested = false;
         toggleLabel.textContent = "Manuele Besturing: OFF";

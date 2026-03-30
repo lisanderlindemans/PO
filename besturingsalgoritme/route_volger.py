@@ -1,5 +1,6 @@
 import time
 import wifi_verbinding
+from wifi_verbinding import debug
 from besturing import draai_links, draai_rechts, rijd_rechtdoor
 
 # Richtingen
@@ -36,17 +37,17 @@ def draai_naar(richting):
     verschil_richting = (richting - huidige_richting) % 4
     
     if verschil_richting == 1:
-        wifi_verbinding.debug("Step: Draai naar rechts")
+        debug("Step: Draai naar rechts")
 
         draai_rechts()
     elif verschil_richting == 2:
-        wifi_verbinding.debug("Step: keer om")
+        debug("Step: keer om")
 
         draai_rechts()
         draai_rechts()
         draai_rechts()
     elif verschil_richting == 3:
-        wifi_verbinding.debug("Step: Draai naar links")
+        debug("Step: Draai naar links")
 
         draai_links()
     
@@ -61,7 +62,7 @@ def bepaal_start_richting(route):
     richting = bepaal_richting(start, volgende)
 
     huidige_richting = richting
-    wifi_verbinding.debug("Start richting ingesteld op: " + richting_namen[richting])
+    debug("Start richting ingesteld op: " + richting_namen[richting])
 
 def volg_route(route, groenpunten):
     if huidige_richting == None:
@@ -71,22 +72,22 @@ def volg_route(route, groenpunten):
         wifi_verbinding.wifi_loop()
 
         if wifi_verbinding.noodstop:
-            wifi_verbinding.debug("Noodstop ingedrukt, exiting code")
+            debug("Noodstop ingedrukt, exiting code")
             exit()
             
         huidige = route[i]
-        wifi_verbinding.debug("Huidige positie: x=" + str(huidige[0]) + ", y=" + str(huidige[1]))
+        debug("Huidige positie: x=" + str(huidige[0]) + ", y=" + str(huidige[1]))
         volgende = route[i + 1]
 
         richting = bepaal_richting(huidige, volgende)
-        wifi_verbinding.debug("Nieuwe richting: " + richting_namen[richting])
+        debug("Nieuwe richting: " + richting_namen[richting])
 
         draai_naar(richting)
 
         rijd_rechtdoor()
 
         if volgende in groenpunten:
-            wifi_verbinding.debug("Step: Toren plaatsen")
+            debug("Step: Toren plaatsen")
             #plaats_toren()
         
         time.sleep(0.1)

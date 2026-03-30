@@ -3,6 +3,7 @@ import digitalio
 import pwmio
 import time
 import wifi_verbinding
+from wifi_verbinding import debug
 from besturing import MOTOR_L_DIR, MOTOR_L_PWM, MOTOR_L_DUTY, MOTOR_R_DIR, MOTOR_R_PWM, MOTOR_R_DUTY
 
 last_debug_times = {
@@ -18,7 +19,7 @@ def debug_met_interval(key, message):
     huidige_tijd = time.monotonic()
     
     if huidige_tijd - last_debug_times[key] >= DEBUG_INTERVAL:
-        wifi_verbinding.debug(message)
+        debug(message)
         last_debug_times[key] = huidige_tijd
 
 def manueel_loop():
