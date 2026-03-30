@@ -1,8 +1,6 @@
 const slider = document.getElementById("throttle");
 const output = document.getElementById("value");
 
-let ws;
-
 let debounceTimeout = null;
 
 slider.addEventListener("input", () => {
@@ -18,7 +16,7 @@ slider.addEventListener("input", () => {
   }
 
   debounceTimeout = setTimeout(() => {
-    ws.send(JSON.stringify({
+    window.sendCommand(JSON.stringify({
       type: "manual_control",
       throttle: val
     }));
@@ -26,14 +24,14 @@ slider.addEventListener("input", () => {
 });
 
 function links() {
-  ws.send(JSON.stringify({
+  window.sendCommand(JSON.stringify({
     type: "manual_control",
     action: "links"
   }));
 }
 
 function rechts(){
-  ws.send(JSON.stringify({
+  window.sendCommand(JSON.stringify({
     type: "manual_control",
     action: "rechts"
   }));
@@ -45,16 +43,10 @@ const toggleLabel = document.getElementById('toggleLabel');
 manualSwitch.addEventListener('change', function() {
     if(this.checked) {
         toggleLabel.textContent = "Manuele Besturing: Connecting";
-        ws = new WebSocket("ws://192.168.4.1/connect-websocket");
-
-        ws.onopen = () => {
-          enableManualControl();
-          toggleLabel.textContent = "Manuele Besturing: ON";
-        };
+        window.connect_socket();
+        enableManualControl();
     } else {
         toggleLabel.textContent = "Manuele Besturing: OFF";
-        ws.close();
-        ws = null;
         disableManualControl();
     }
 });
@@ -64,7 +56,7 @@ function enableManualControl() {
     document.querySelectorAll('.arrow-btn').forEach(btn => btn.disabled = false);
 
     // enable
-    ws.send(JSON.stringify({
+    window.sendCommand(JSON.stringify({
         type: "mode",
         value: "manual"
     }));
@@ -75,8 +67,15 @@ function disableManualControl() {
     document.querySelectorAll('.arrow-btn').forEach(btn => btn.disabled = true);
 
     // disable
-    ws.send(JSON.stringify({
+    window.sendCommand(JSON.stringify({
         type: "mode",
         value: "auto"
     }));
 }
+
+window.__poShared.addStatusListener((sharedStatus) => {
+  if (!manualSwitch.checked) return;
+  if (sharedStatus === "connected") toggleLabel.textContent = "Manuele Besturing: ON";
+  else if (sharedStatus === "connecting") toggleLabel.textContent = "Manuele Besturing: Connecting";
+  else toggleLabel.textContent = "Manuele Besturing: Disconnected";
+});

@@ -1,5 +1,6 @@
 const GAME_SECONDS = 240; // in seconden
 const ACC_POINTS   = { 1:100, 2:70, 3:50, 4:40, 5:20, 0:0 };
+const GAME_STATE_KEY = "po.homeGameState";
 
 function applyOrientation(points, orientation) {
   if (orientation === "upside_down") return 0;
@@ -58,9 +59,59 @@ const restartPenaltyEl = document.getElementById("restartPenalty");
 
 let interventies = 0;
 let restartLevel = 0; 
+let lastUpdateMs = Date.now();
 
 function computeInterventiePenalty() {
   return interventies * 50;
+}
+
+function saveGameState() {
+  localStorage.setItem(GAME_STATE_KEY, JSON.stringify({
+    state,
+    remaining,
+    greens,
+    redTouched: Array.from(redTouched),
+    parkedInGarage,
+    interventies,
+    restartLevel,
+    lastUpdateMs
+  }));
+}
+
+function loadGameState() {
+  try {
+    const raw = localStorage.getItem(GAME_STATE_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+
+    state = saved.state ?? "READY";
+    remaining = Number.isFinite(saved.remaining) ? saved.remaining : GAME_SECONDS;
+    parkedInGarage = !!saved.parkedInGarage;
+    interventies = Number.isFinite(saved.interventies) ? saved.interventies : 0;
+    restartLevel = Number.isFinite(saved.restartLevel) ? saved.restartLevel : 0;
+    lastUpdateMs = Number.isFinite(saved.lastUpdateMs) ? saved.lastUpdateMs : Date.now();
+
+    redTouched.clear();
+    (saved.redTouched || []).forEach(id => redTouched.add(String(id)));
+
+    if (Array.isArray(saved.greens) && saved.greens.length === greens.length) {
+      for (let i = 0; i < greens.length; i++) {
+        greens[i].level = saved.greens[i].level ?? null;
+        greens[i].orientation = saved.greens[i].orientation || "upright";
+        greens[i].points = Number.isFinite(saved.greens[i].points) ? saved.greens[i].points : 0;
+      }
+    }
+
+    if (state === "RUNNING" || state === "NOODSTOP") {
+      const elapsed = Math.floor((Date.now() - lastUpdateMs) / 1000);
+      if (elapsed > 0) {
+        remaining = Math.max(0, remaining - elapsed);
+        if (remaining <= 0) state = "TIMEUP";
+      }
+    }
+  } catch {
+    // negeren bij corrupte storage
+  }
 }
 
 function computeRestartPenalty() {
@@ -129,12 +180,11 @@ function applyAction(action, direction) {
   }
 }
 
-function setTimerRunning(running) {
+function setTimerRunning(running, immediateTick = true) {
   const isCurrentlyRunning = (timerHandle !== null);
 
   if (running && !isCurrentlyRunning) {
-
-    timerTick();
+    if (immediateTick) timerTick();
 
     timerHandle = setInterval(timerTick, 1000);
   }
@@ -149,6 +199,7 @@ function timerTick() {
   if (!(state === "RUNNING" || state === "NOODSTOP")) return;
 
   remaining--;
+  lastUpdateMs = Date.now();
 
   if (remaining <= 0) {
     remaining = 0;
@@ -163,6 +214,7 @@ function timerTick() {
 function startGame() {
   if (state !== "READY") return;
   state = "RUNNING";
+  lastUpdateMs = Date.now();
   setTimerRunning(true);
   render();
 }
@@ -175,6 +227,7 @@ function resetGame() {
   restartLevel = 0;
   redTouched.clear();
   greens.forEach(g => { g.level = null; g.orientation = "upright"; g.points = 0; });
+  lastUpdateMs = Date.now();
 
   setTimerRunning(false);
   updateGreenInfo();
@@ -413,6 +466,7 @@ function render() {
 
   updateGreenInfo();
   updateButtonHighlights();
+  saveGameState();
 }
 
 startBtn.addEventListener("click", startGame);
@@ -438,52 +492,24 @@ document.querySelectorAll(".restartBtn").forEach(btn => {
 
 buildGreenControls();
 buildRedControls();
+loadGameState();
+if (state === "RUNNING" || state === "NOODSTOP") {
+  setTimerRunning(true, false);
+}
 render();
 
-let socket;
-
-function connect_socket() {
-    // Close any existing sockets
-    disconnect_socket();
-
-    socket = new WebSocket("ws://192.168.4.1:80/connect-websocket");
-
-    // Connection opened
-    socket.addEventListener("open", (event) => {
-        document.getElementById("status").textContent = "Status: Connected";
-    });
-
-    socket.addEventListener("close", (event) => {
-        socket = undefined;
-        document.getElementById("status").textContent = "Status: Disconnected";
-    });
-
-    socket.addEventListener("message", (event) => {
-        console.log(event.data)
-    });
-
-    socket.addEventListener("error", (event) => {
-        socket = undefined;
-        document.getElementById("status").textContent = "Status: Disconnected";
-    });
-}
-
-function disconnect_socket() {
-    if(socket != undefined) {
-        socket.close();
-    }
-}
-
-function sendCommand(command) {
-    if(socket != undefined) {
-        socket.send(command)
-    } else {
-        alert("Not connected to the PICO")
-    }
-}
+window.__poShared.addStatusListener((sharedStatus) => {
+  const statusEl = document.getElementById("status");
+  if (!statusEl) return;
+  if (sharedStatus === "connected") statusEl.textContent = "Status: Connected";
+  else if (sharedStatus === "connecting") statusEl.textContent = "Status: Connecting";
+  else statusEl.textContent = "Status: Disconnected";
+});
 
 function setState(value) {
   state = value;
+  lastUpdateMs = Date.now();
+  saveGameState();
 }
 
 function getState() {
@@ -493,5 +519,3 @@ function getState() {
 window.render = render;
 window.setState = setState;
 window.getState = getState;
-window.sendCommand = sendCommand;
-window.connect_socket = connect_socket;
