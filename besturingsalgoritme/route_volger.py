@@ -45,7 +45,6 @@ def draai_naar(richting):
 
         draai_rechts()
         draai_rechts()
-        draai_rechts()
     elif verschil_richting == 3:
         debug("Step: Draai naar links")
 

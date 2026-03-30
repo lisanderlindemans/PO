@@ -32,10 +32,11 @@ GRENSWAARDE_LDR = (
 global MOTOR_R_DUTY
 global MOTOR_L_DUTY
 
-MOTOR_R_DUTY = round(18000 * 1.5)
+MOTOR_R_DUTY = round(16300 * 1.5)
 MOTOR_L_DUTY = round(15000 * 1.5)
 
-THRESHOLD_AUTOCORRECT = 0.027177
+THRESHOLD_AUTOCORRECT = 0.1 # 0.027177
+draai_fix = 0.5
 metingnummer = 0
 
 def meet_data():
@@ -70,6 +71,11 @@ def draai_rechts():
         debug("Naar rechts aan het draaien!")
         time.sleep(0.1)
 
+    draai_einde = time.monotonic()
+
+    while time.monotonic() - draai_einde < draai_fix:
+        wifi_loop()
+
     MOTOR_R_DIR.value = True
     MOTOR_R_PWM.duty_cycle = 0
     MOTOR_L_PWM.duty_cycle = 0
@@ -89,6 +95,11 @@ def draai_links():
         meet_data()
         debug("Naar links aan het draaien!")
         time.sleep(0.1)
+
+    draai_einde = time.monotonic()
+
+    while time.monotonic() - draai_einde < draai_fix:
+        wifi_loop()
 
     MOTOR_L_DIR.value = True
     MOTOR_R_PWM.duty_cycle = 0
