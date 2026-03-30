@@ -263,8 +263,6 @@ function naarCoordArray(punten) {
     return punten.map(p => [p.r, p.c]);
 }
 
-const ws = new WebSocket("ws://192.168.4.1/connect-websocket");
-
 function sendRoute(heenRoute, terugRoute, groen) {
     const json = {
         heenroute: naarCoordArray(heenRoute),
@@ -281,7 +279,7 @@ function sendRoute(heenRoute, terugRoute, groen) {
     }
     */
 
-    ws.send(JSON.stringify(json))
+    sendCommand(JSON.stringify(json))
 }
 
 function verwijderRoute() { // Niet in flowchart
