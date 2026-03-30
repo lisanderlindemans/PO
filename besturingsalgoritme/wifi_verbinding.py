@@ -2,6 +2,7 @@ import socketpool
 import wifi
 from adafruit_httpserver import Server, Request, GET, Websocket
 import json
+from manueel_besturing import rijd_manueel_rechtdoor
 
 # DEBUG MODE
 DEBUG = True
@@ -72,6 +73,7 @@ def wifi_loop():
                         debug("Manual mode on")
                     else:
                         manual_mode = False
+                        rijd_manueel_rechtdoor(0)
                         debug("Manual mode off")
                 
                 elif data_json.get("type") == "manual_control":
