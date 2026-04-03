@@ -26,11 +26,6 @@ THRESHOLD_AUTOCORRECT = 0.06
 MOTOR_R_FORWARD = True
 MOTOR_L_FORWARD = False
 
-# RGB LED
-LED_R = pwmio.PWMOut(board.GP9, frequency=1000)
-LED_G = pwmio.PWMOut(board.GP10, frequency=1000)
-LED_B = pwmio.PWMOut(board.GP11, frequency=1000)
-
 # Servo
 servo_pin = pwmio.PWMOut(board.GP12, duty_cycle=2**15, frequency=50)
 servo_motor = servo.Servo(servo_pin)
@@ -83,9 +78,3 @@ def rijd_rechtdoor():
         time.sleep(0.01)
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_R_PWM.duty_cycle = 0
-
-# stelt de RGB-led gelijk aan de gegeven kleur, met een waarde telkens tussen de 0 en 60000
-def statusled_kleur(rood: int, groen: int, blauw: int):
-    LED_R.duty_cycle = rood
-    LED_G.duty_cycle = groen
-    LED_B.duty_cycle = blauw
