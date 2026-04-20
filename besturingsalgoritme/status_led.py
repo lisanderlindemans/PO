@@ -19,22 +19,29 @@ def LED_beweging(t):
 
     set_color(vgl, 1, vgl)
 
-def LED_toren():
-    set_color(1.0, 0.35, 0.0)
+def LED_toren(t):
+    if round(t) // 2 == 0:
+        set_color(1.0, 0.35, 0.0)
+    else:
+        set_color(0, 0, 0)
 
 def LED_acheruit(t):
-    if t // 2:
-        set_color(1, 0, 0)
+    if round(t) // 2 == 0:
+        set_color(1.0, 0.1, 0.1)
+    else:
+        set_color(0, 0, 0)
 
 def LED_garage():
-    set_color(0, 0, 1)
+    set_color(0.25, 0.4, 1.0)
 
 def LED_loop():
+    nu =  time.monotonic
+
     if MOTOR_L_DIR.value is not MOTOR_L_FORWARD and MOTOR_R_DIR.value is not MOTOR_L_FORWARD:
-        LED_acheruit()
+        LED_acheruit(nu)
     elif terugroute:
         LED_garage()
     elif toren_aan_het_plaatsen:
-        LED_toren()
+        LED_toren(nu)
     else:
-        LED_beweging(time.monotonic)
+        LED_beweging(nu)
