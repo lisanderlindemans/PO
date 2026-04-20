@@ -2,7 +2,7 @@ import board
 import pwmio
 import math
 import time
-from route_volger import terugroute, toren_aan_het_plaatsen
+import route_volger
 from besturing import MOTOR_L_FORWARD, MOTOR_L_DIR, MOTOR_R_DIR, MOTOR_R_FORWARD
 
 red = pwmio.PWMOut(board.GP9, frequency=1000, duty_cycle=0)
@@ -35,13 +35,13 @@ def LED_garage():
     set_color(0.25, 0.4, 1.0)
 
 def LED_loop():
-    nu =  time.monotonic
+    nu =  time.monotonic()
 
-    if MOTOR_L_DIR.value is not MOTOR_L_FORWARD and MOTOR_R_DIR.value is not MOTOR_L_FORWARD:
+    if MOTOR_L_DIR.value is not MOTOR_L_FORWARD and MOTOR_R_DIR.value is not MOTOR_R_FORWARD:
         LED_acheruit(nu)
-    elif terugroute:
+    elif route_volger.terugroute:
         LED_garage()
-    elif toren_aan_het_plaatsen:
+    elif route_volger.toren_aan_het_plaatsen:
         LED_toren(nu)
     else:
         LED_beweging(nu)

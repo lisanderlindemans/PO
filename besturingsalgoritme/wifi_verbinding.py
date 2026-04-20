@@ -50,7 +50,6 @@ def start_wifi():
 
 def wifi_loop():
     global route_data
-    global noodstop
     global manual_mode
     global manual_action
     global manual_throttle
@@ -80,9 +79,17 @@ def wifi_loop():
                     elif "throttle" in data_json:
                         manual_throttle = int(data_json.get("throttle"))    
                 elif data_json.get("noodstop"):
+                    global noodstop
                     noodstop = True
                 else:
                     route_data = data_json
 
             except Exception as e:
                 print("JSON error:", e)
+
+def check_noodstop():
+    global noodstop
+
+    if noodstop:
+        debug("Noodstop ingedrukt, exiting code")
+        exit()

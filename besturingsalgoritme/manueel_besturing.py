@@ -1,7 +1,7 @@
 import time
 import wifi_verbinding
 from wifi_verbinding import debug
-from besturing import MOTOR_L_DIR, MOTOR_L_PWM, MOTOR_L_DUTY, MOTOR_R_DIR, MOTOR_R_PWM, MOTOR_R_DUTY
+from besturing import MOTOR_L_DIR, MOTOR_L_PWM, MOTOR_L_DUTY, MOTOR_R_DIR, MOTOR_R_PWM, MOTOR_R_DUTY, MOTOR_L_FORWARD, MOTOR_R_FORWARD
 from status_led import LED_loop
 
 last_debug_times = {
@@ -46,34 +46,34 @@ def manueel_loop():
 
 def draai_manueel_rechts():
     debug_met_interval("rechts", "Manueel naar rechts aan het draaien")
-    MOTOR_R_DIR.value = False
+    MOTOR_R_DIR.value = not MOTOR_R_FORWARD
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.67)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.67)
 
     LED_loop()
     time.sleep(0.05)
 
-    MOTOR_R_DIR.value = True
+    MOTOR_R_DIR.value = MOTOR_R_FORWARD
     MOTOR_R_PWM.duty_cycle = 0
     MOTOR_L_PWM.duty_cycle = 0
 
 def draai_manueel_links():
     debug_met_interval("links", "Manueel naar links aan het draaien")
-    MOTOR_L_DIR.value = False
+    MOTOR_L_DIR.value = not MOTOR_L_FORWARD
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.67)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.67)
 
     LED_loop()
     time.sleep(0.05)
 
-    MOTOR_L_DIR.value = True
+    MOTOR_L_DIR.value = MOTOR_L_FORWARD
     MOTOR_R_PWM.duty_cycle = 0
     MOTOR_L_PWM.duty_cycle = 0
 
 def rijd_manueel_rechtdoor(factor=1.0):
     debug_met_interval("rechtdoor", "Manueel rechtdoor aan het rijden met " + str(factor * 100) + "%")
-    MOTOR_L_DIR.value = True
-    MOTOR_R_DIR.value = True
+    MOTOR_L_DIR.value = MOTOR_L_FORWARD
+    MOTOR_R_DIR.value = MOTOR_R_FORWARD
     
     LED_loop()
 
@@ -82,8 +82,8 @@ def rijd_manueel_rechtdoor(factor=1.0):
 
 def rijd_manueel_achteruit(factor=1.0):
     debug_met_interval("achteruit", "Manueel achteruit aan het rijden met " + str(factor * 100) + "%")
-    MOTOR_L_DIR.value = False
-    MOTOR_R_DIR.value = False
+    MOTOR_L_DIR.value = not MOTOR_L_FORWARD
+    MOTOR_R_DIR.value = not MOTOR_R_FORWARD
 
     LED_loop()
 
@@ -91,7 +91,7 @@ def rijd_manueel_achteruit(factor=1.0):
     MOTOR_R_PWM.duty_cycle = int(MOTOR_R_DUTY * factor)
 
 
-MOTOR_L_DIR.value = True
-MOTOR_R_DIR.value = True
+MOTOR_L_DIR.value = MOTOR_L_FORWARD
+MOTOR_R_DIR.value = MOTOR_R_FORWARD
 MOTOR_L_PWM.duty_cycle = 0
 MOTOR_R_PWM.duty_cycle = 0
