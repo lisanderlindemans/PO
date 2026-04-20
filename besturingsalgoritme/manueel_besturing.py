@@ -1,6 +1,3 @@
-import board
-import digitalio
-import pwmio
 import time
 import wifi_verbinding
 from wifi_verbinding import debug

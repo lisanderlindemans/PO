@@ -1,6 +1,4 @@
 import time
-import board
-from analogio import AnalogIn
 import wifi_verbinding
 from wifi_verbinding import debug
 from route_volger import volg_route
