@@ -4,10 +4,16 @@ import analogio
 import pwmio
 import time
 from adafruit_motor import servo
+from wifi_verbinding import wifi_loop
+from botsing_sensor import check_botsing_sensor
+from status_led import LED_loop
+
+global MOTOR_L_DIR, MOTOR_L_PWM, MOTOR_L_DUTY, MOTOR_R_DIR, MOTOR_R_PWM, MOTOR_R_DUTY
 
 MOTOR_L_PWM = pwmio.PWMOut(board.GP19, frequency=1000)
 MOTOR_L_DIR = digitalio.DigitalInOut(board.GP20)
 MOTOR_L_DIR.direction = digitalio.Direction.OUTPUT
+
 MOTOR_R_PWM = pwmio.PWMOut(board.GP21, frequency=1000)
 MOTOR_R_DIR = digitalio.DigitalInOut(board.GP22)
 MOTOR_R_DIR.direction = digitalio.Direction.OUTPUT
@@ -20,9 +26,12 @@ LDR_A = analogio.AnalogIn(board.GP28)
 GRENSWAARDE_LDR = (
     0.28  # LDR-voltage moet BOVEN deze waarde liggen om zwart te detecteren
 )
+
 MOTOR_R_DUTY = 30000
 MOTOR_L_DUTY = 33000
+
 THRESHOLD_AUTOCORRECT = 0.06
+
 MOTOR_R_FORWARD = True
 MOTOR_L_FORWARD = False
 
@@ -38,9 +47,18 @@ def draai_rechts():
     MOTOR_L_DIR.value = MOTOR_L_FORWARD
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.8)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.8)
-    time.sleep(1.5)
+
+    start = time.monotonic()
+
+    # vervangt time.sleep(1.5)
+    while time.monotonic() - start < 1.5:
+        check_botsing_sensor()
+        wifi_loop()
+        LED_loop()
+
     while calculate_voltage(LDR_L.value) < GRENSWAARDE_LDR:
         time.sleep(0.01)
+
     MOTOR_R_PWM.duty_cycle = 0
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_R_DIR.value = MOTOR_R_FORWARD
@@ -51,9 +69,18 @@ def draai_links():
     MOTOR_R_DIR.value = MOTOR_R_FORWARD
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.8)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.8)
-    time.sleep(1.5)
+
+    start = time.monotonic()
+
+    # vervangt time.sleep(1.5)
+    while time.monotonic() - start < 1.5:
+        check_botsing_sensor()
+        wifi_loop()
+        LED_loop()
+
     while calculate_voltage(LDR_R.value) < GRENSWAARDE_LDR:
         time.sleep(0.01)
+
     MOTOR_R_PWM.duty_cycle = 0
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_L_DIR.value = MOTOR_L_FORWARD
@@ -64,7 +91,14 @@ def rijd_rechtdoor():
     MOTOR_R_DIR.value = MOTOR_R_FORWARD
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
-    time.sleep(1.0)
+    start = time.monotonic()
+
+    # vervangt time.sleep(1.0)
+    while time.monotonic() - start < 1.0:
+        check_botsing_sensor()
+        wifi_loop()
+        LED_loop()
+
     while calculate_voltage(LDR_A.value) < GRENSWAARDE_LDR:
         if calculate_voltage(LDR_R.value) - calculate_voltage(LDR_L.value) > THRESHOLD_AUTOCORRECT: # Stuur NAAR rechts bij
             MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.8)
@@ -76,5 +110,6 @@ def rijd_rechtdoor():
             MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
             MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
         time.sleep(0.01)
+
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_R_PWM.duty_cycle = 0

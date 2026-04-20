@@ -5,6 +5,7 @@ import time
 import wifi_verbinding
 from wifi_verbinding import debug
 from besturing import MOTOR_L_DIR, MOTOR_L_PWM, MOTOR_L_DUTY, MOTOR_R_DIR, MOTOR_R_PWM, MOTOR_R_DUTY
+from status_led import LED_loop
 
 last_debug_times = {
     "links": 0,
@@ -52,6 +53,7 @@ def draai_manueel_rechts():
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.67)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.67)
 
+    LED_loop()
     time.sleep(0.05)
 
     MOTOR_R_DIR.value = True
@@ -64,6 +66,7 @@ def draai_manueel_links():
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.67)
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.67)
 
+    LED_loop()
     time.sleep(0.05)
 
     MOTOR_L_DIR.value = True
@@ -74,7 +77,9 @@ def rijd_manueel_rechtdoor(factor=1.0):
     debug_met_interval("rechtdoor", "Manueel rechtdoor aan het rijden met " + str(factor * 100) + "%")
     MOTOR_L_DIR.value = True
     MOTOR_R_DIR.value = True
-        
+    
+    LED_loop()
+
     MOTOR_L_PWM.duty_cycle = int(MOTOR_L_DUTY * factor)
     MOTOR_R_PWM.duty_cycle = int(MOTOR_R_DUTY * factor)
 
@@ -82,6 +87,8 @@ def rijd_manueel_achteruit(factor=1.0):
     debug_met_interval("achteruit", "Manueel achteruit aan het rijden met " + str(factor * 100) + "%")
     MOTOR_L_DIR.value = False
     MOTOR_R_DIR.value = False
+
+    LED_loop()
 
     MOTOR_L_PWM.duty_cycle = int(MOTOR_L_DUTY * factor)
     MOTOR_R_PWM.duty_cycle = int(MOTOR_R_DUTY * factor)

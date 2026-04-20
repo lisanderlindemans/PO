@@ -2,6 +2,7 @@ import time
 import wifi_verbinding
 from wifi_verbinding import debug
 from besturing import draai_links, draai_rechts, rijd_rechtdoor
+from status_led import LED_acheruit, LED_beweging, LED_garage, LED_toren
 
 # Richtingen
 NOORD = 0
@@ -63,6 +64,11 @@ def bepaal_start_richting(route):
     huidige_richting = richting
     debug("Start richting ingesteld op: " + richting_namen[richting])
 
+global terugroute, toren_aan_het_plaatsen
+
+terugroute = False
+toren_aan_het_plaatsen = False
+
 def volg_route(route, groenpunten):
     if huidige_richting == None:
         bepaal_start_richting(route)
@@ -88,5 +94,13 @@ def volg_route(route, groenpunten):
         if volgende in groenpunten:
             debug("Step: Toren plaatsen")
             #plaats_toren()
+            toren_aan_het_plaatsen = True
+        else:
+            toren_aan_het_plaatsen = False
+        
+        if len(groenpunten) == 0:
+            terugroute = True
+        else:
+            terugroute = False
         
         time.sleep(0.1)

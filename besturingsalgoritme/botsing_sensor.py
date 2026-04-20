@@ -7,39 +7,29 @@ from wifi_verbinding import debug
 uart = busio.UART(board.GP0, board.GP1, baudrate=9600)
 sensor = adafruit_us100.US100(uart)
 
-AANTAL_METINGEN = 5
-BOTSING_DREMPEL = 10  # cm
+BOTSING_DREMPEL = 10
 BOTSING_MIN_METINGEN = 3
 
 BOTSING_COUNTER = 0
 
-MEET_INTERVAL = 0.2  # 200 ms tussen metingen
-
-def meet_gemiddelde():
-    metingen = []
-    laatste_tijd = time.monotonic()
-
-    while len(metingen) < AANTAL_METINGEN:
-        nu = time.monotonic()
-
-        if nu - laatste_tijd >= MEET_INTERVAL:
-            laatste_tijd = nu
-
-            afstand = sensor.distance
-            if afstand is not None and afstand > 0:
-                metingen.append(afstand)
-
-    if len(metingen) > 0:
-        return sum(metingen) / len(metingen)
-    else:
-        return None
+laatste_meting_tijd = 0
+MEET_INTERVAL = 0.2
 
 def check_botsing_sensor():
     global BOTSING_COUNTER
+    global laatste_meting_tijd
 
-    afstand = meet_gemiddelde()
+    nu = time.monotonic()
 
-    if afstand is not None:
+    # Alleen meten als interval voorbij is
+    if nu - laatste_meting_tijd < MEET_INTERVAL:
+        return False
+
+    laatste_meting_tijd = nu
+
+    afstand = sensor.distance
+
+    if afstand is not None and afstand > 0:
         debug(f"Afstand: {afstand:.1f} cm")
 
         if afstand < BOTSING_DREMPEL:
