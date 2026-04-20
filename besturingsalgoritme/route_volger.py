@@ -1,8 +1,9 @@
 import time
 import wifi_verbinding
 from wifi_verbinding import debug
-from besturing import draai_links, draai_rechts, rijd_rechtdoor
-from status_led import LED_acheruit, LED_beweging, LED_garage, LED_toren
+from besturing import draai_links, draai_rechts, rijd_rechtdoor, plaats_toren
+from status_led import LED_loop
+from wifi_verbinding import wifi_loop
 
 # Richtingen
 NOORD = 0
@@ -18,6 +19,9 @@ richting_namen = {
 }
 
 huidige_richting = None
+
+terugroute = False
+toren_aan_het_plaatsen = False
 
 def bepaal_richting(huidige, volgende):
     verschil_x = volgende[0] - huidige[0]
@@ -40,16 +44,16 @@ def draai_naar(richting):
     if verschil_richting == 1:
         debug("Step: Draai naar rechts")
 
-        draai_rechts()
+        draai_rechts([LED_loop, wifi_loop])
     elif verschil_richting == 2:
         debug("Step: keer om")
 
-        draai_rechts()
-        draai_rechts()
+        draai_rechts([LED_loop, wifi_loop])
+        draai_rechts([LED_loop, wifi_loop])
     elif verschil_richting == 3:
         debug("Step: Draai naar links")
 
-        draai_links()
+        draai_links([LED_loop, wifi_loop])
     
     huidige_richting = richting
 
@@ -64,12 +68,9 @@ def bepaal_start_richting(route):
     huidige_richting = richting
     debug("Start richting ingesteld op: " + richting_namen[richting])
 
-global terugroute, toren_aan_het_plaatsen
-
-terugroute = False
-toren_aan_het_plaatsen = False
-
 def volg_route(route, groenpunten):
+    global terugroute, toren_aan_het_plaatsen
+
     if huidige_richting == None:
         bepaal_start_richting(route)
 
@@ -89,11 +90,11 @@ def volg_route(route, groenpunten):
 
         draai_naar(richting)
 
-        rijd_rechtdoor()
+        rijd_rechtdoor([LED_loop, wifi_loop])
 
         if volgende in groenpunten:
             debug("Step: Toren plaatsen")
-            #plaats_toren()
+            plaats_toren([LED_loop, wifi_loop])
             toren_aan_het_plaatsen = True
         else:
             toren_aan_het_plaatsen = False
