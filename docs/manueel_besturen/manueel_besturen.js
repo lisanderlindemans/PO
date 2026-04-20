@@ -33,6 +33,7 @@ function sendManualAction(action) {
 const HOLD_REPEAT_MS = 100;
 
 function setupHoldButton(button, action) {
+  if (!button) return;
   let intervalId = null;
 
   const stop = () => {
