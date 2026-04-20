@@ -101,8 +101,16 @@ def rijd_rechtdoor(functies: list[Callable] = []):
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_R_PWM.duty_cycle = 0
 
-def plaats_toren():
+def plaats_toren(functies: list[Callable] = []):
     servo_motor.angle += 45
+    start = time.monotonic()
+    while time.monotonic() - start < 3.0:
+        for func in functies:
+            func()
 
-def reset_servo():
+def reset_servo(functies: list[Callable] = []):
     servo_motor.angle = 0
+    start = time.monotonic()
+    while time.monotonic() - start < 3.0:
+        for func in functies:
+            func()
