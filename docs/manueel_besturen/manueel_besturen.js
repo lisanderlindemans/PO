@@ -23,64 +23,39 @@ slider.addEventListener("input", () => {
   }, 50);
 });
 
-function links() {
+function sendManualAction(action) {
   window.sendCommand(JSON.stringify({
     type: "manual_control",
-    action: "links"
+    action
   }));
 }
 
-function rechts(){
-  window.sendCommand(JSON.stringify({
-    type: "manual_control",
-    action: "rechts"
-  }));
+const HOLD_REPEAT_MS = 100;
+
+function setupHoldButton(button, action) {
+  let intervalId = null;
+
+  const stop = () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  };
+
+  const start = () => {
+    if (button.disabled || intervalId) return;
+    sendManualAction(action);
+    intervalId = setInterval(() => sendManualAction(action), HOLD_REPEAT_MS);
+  };
+
+  button.addEventListener("pointerdown", start);
+  button.addEventListener("pointerup", stop);
+  button.addEventListener("pointerleave", stop);
+  button.addEventListener("pointercancel", stop);
 }
 
-let intervalLinks = null;
-let intervalRechts = null;
-
-const btnLinks = document.querySelectorAll('.arrow-btn')[0];
-
-btnLinks.addEventListener("mousedown", () => {
-  intervalLinks = setInterval(() => {
-    ws.send(JSON.stringify({
-      type: "manual_control",
-      action: "links"
-    }));
-  }, 100);
-});
-
-btnLinks.addEventListener("mouseup", stopLinks);
-btnLinks.addEventListener("mouseleave", stopLinks);
-
-function stopLinks() {
-  if (intervalLinks) {
-    clearInterval(intervalLinks);
-    intervalLinks = null;
-  }
-}
-
-const btnRechts = document.querySelectorAll('.arrow-btn')[1];
-
-btnRechts.addEventListener("mousedown", () => {
-  intervalRechts = setInterval(() => {
-    ws.send(JSON.stringify({
-      type: "manual_control",
-      action: "rechts"
-    }));
-  }, 100);
-});
-
-btnRechts.addEventListener("mouseup", stopRechts);
-btnRechts.addEventListener("mouseleave", stopRechts);
-
-function stopRechts() {
-  if (intervalRechts) {
-    clearInterval(intervalRechts);
-    intervalRechts = null;
-  }
-}
+setupHoldButton(document.getElementById("btnLinks"), "links");
+setupHoldButton(document.getElementById("btnRechts"), "rechts");
 
 const manualSwitch = document.getElementById('manualSwitch');
 const toggleLabel = document.getElementById('toggleLabel');
