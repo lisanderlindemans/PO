@@ -71,7 +71,7 @@ def bepaal_start_richting(route):
     debug("Start richting ingesteld op: " + richting_namen[richting])
 
 def volg_route(route, groenpunten):
-    global terugroute, toren_aan_het_plaatsen
+    global terugroute, toren_aan_het_plaatsen, moet_toren_plaatsen
 
     if huidige_richting == None:
         bepaal_start_richting(route)
