@@ -23,6 +23,7 @@ huidige_richting = None
 
 terugroute = False
 toren_aan_het_plaatsen = False
+moet_toren_plaatsen = False
 
 def bepaal_richting(huidige, volgende):
     verschil_x = volgende[0] - huidige[0]
@@ -89,14 +90,16 @@ def volg_route(route, groenpunten):
 
         draai_naar(richting)
 
+        if moet_toren_plaatsen:
+            debug("Step: Toren plaatsen")
+            toren_aan_het_plaatsen = True
+            plaats_toren([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
+            toren_aan_het_plaatsen = False
+
         rijd_rechtdoor([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
 
         if volgende in groenpunten:
-            debug("Step: Toren plaatsen")
-            plaats_toren([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
-            toren_aan_het_plaatsen = True
-        else:
-            toren_aan_het_plaatsen = False
+            moet_toren_plaatsen = True
         
         if len(groenpunten) == 0:
             terugroute = True
