@@ -4,6 +4,7 @@ from wifi_verbinding import debug, check_noodstop
 from besturing import draai_links, draai_rechts, rijd_rechtdoor, plaats_toren
 from status_led import LED_loop
 from wifi_verbinding import wifi_loop
+from botsing_sensor import check_botsing_sensor
 
 # Richtingen
 NOORD = 0
@@ -44,16 +45,16 @@ def draai_naar(richting):
     if verschil_richting == 1:
         debug("Step: Draai naar rechts")
 
-        draai_rechts([LED_loop, wifi_loop, check_noodstop])
+        draai_rechts([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
     elif verschil_richting == 2:
         debug("Step: keer om")
 
-        draai_rechts([LED_loop, wifi_loop, check_noodstop])
-        draai_rechts([LED_loop, wifi_loop, check_noodstop])
+        draai_rechts([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
+        draai_rechts([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
     elif verschil_richting == 3:
         debug("Step: Draai naar links")
 
-        draai_links([LED_loop, wifi_loop, check_noodstop])
+        draai_links([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
     
     huidige_richting = richting
 
@@ -88,11 +89,11 @@ def volg_route(route, groenpunten):
 
         draai_naar(richting)
 
-        rijd_rechtdoor([LED_loop, wifi_loop, check_noodstop])
+        rijd_rechtdoor([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
 
         if volgende in groenpunten:
             debug("Step: Toren plaatsen")
-            plaats_toren([LED_loop, wifi_loop, check_noodstop])
+            plaats_toren([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
             toren_aan_het_plaatsen = True
         else:
             toren_aan_het_plaatsen = False

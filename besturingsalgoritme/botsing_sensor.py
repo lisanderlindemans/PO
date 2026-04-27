@@ -39,6 +39,6 @@ def check_botsing_sensor():
 
         if BOTSING_COUNTER >= BOTSING_MIN_METINGEN:
             debug("Botsing gedetecteerd")
-            return True
+            exit()
 
     return False
