@@ -114,6 +114,22 @@ def rijd_rechtdoor(functies: list[Callable] = []):
 
 
 def plaats_toren(functies: list[Callable] = []):
+    # rijd eerst al wat vooruit
+    MOTOR_L_DIR.value = MOTOR_L_FORWARD
+    MOTOR_R_DIR.value = MOTOR_R_FORWARD
+    MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
+    MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
+    start = time.monotonic()
+    while time.monotonic() - start < 0.7:
+        for func in functies:
+            func()
+    MOTOR_L_PWM.duty_cycle = 0
+    MOTOR_R_PWM.duty_cycle = 0
+    start = time.monotonic()
+    while time.monotonic() - start < 0.4:
+        for func in functies:
+            func()
+    
     old_angle = servo_motor.angle
     servo_motor.angle += 60
     start = time.monotonic()
@@ -125,6 +141,7 @@ def plaats_toren(functies: list[Callable] = []):
             wigglestart = time.monotonic()
         for func in functies:
             func()
+
     # heen-en-weer-wiggle
     wigglestart = time.monotonic()
     wiggle_forward = -1
@@ -133,6 +150,7 @@ def plaats_toren(functies: list[Callable] = []):
             servo_motor.angle += 5 * wiggle_forward
             wigglestart = time.monotonic()
             wiggle_forward *= -1
+
     servo_motor.angle = old_angle + 72
 
 
