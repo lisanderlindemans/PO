@@ -73,6 +73,7 @@ def draai_links(functies: list[Callable] = []):
         for func in functies:
             func()
         time.sleep(0.01)
+    time.sleep(0.3)
     MOTOR_R_PWM.duty_cycle = 0
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_L_DIR.value = MOTOR_L_FORWARD
@@ -109,6 +110,27 @@ def rijd_rechtdoor(functies: list[Callable] = []):
             MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
             MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
         time.sleep(0.01)
+    start = time.monotonic()
+    while time.monotonic() - start < 0.4:
+        for func in functies:
+            func()
+        if (
+            calculate_voltage(LDR_R.value) - calculate_voltage(LDR_L.value)
+            > THRESHOLD_AUTOCORRECT
+        ):  # Stuur NAAR rechts bij
+            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.8)
+            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
+        elif (
+            calculate_voltage(LDR_L.value) - calculate_voltage(LDR_R.value)
+            > THRESHOLD_AUTOCORRECT
+        ):  # Stuur NAAR links bij
+            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.8)
+            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
+        else:
+            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
+            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
+        time.sleep(0.01)
+
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_R_PWM.duty_cycle = 0
 
