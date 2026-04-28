@@ -4,7 +4,6 @@ import analogio
 import pwmio
 import time
 from adafruit_motor import servo
-import botsing_sensor
 
 global MOTOR_L_DIR, MOTOR_L_PWM, MOTOR_L_DUTY, MOTOR_R_DIR, MOTOR_R_PWM, MOTOR_R_DUTY
 MOTOR_L_PWM = pwmio.PWMOut(board.GP19, frequency=1000)
@@ -112,7 +111,6 @@ def rijd_rechtdoor(functies: list[Callable] = []):
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_R_PWM.duty_cycle = 0
 
-
 def plaats_toren(functies: list[Callable] = []):
     # rijd eerst al wat vooruit
     MOTOR_L_DIR.value = MOTOR_L_FORWARD
@@ -152,6 +150,8 @@ def plaats_toren(functies: list[Callable] = []):
             wiggle_forward *= -1
 
     servo_motor.angle = old_angle + 72
+
+    time.sleep(0.01)
 
 
 def reset_servo(functies: list[Callable] = []):
