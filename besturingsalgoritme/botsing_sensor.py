@@ -30,8 +30,6 @@ def check_botsing_sensor():
     afstand = sensor.distance
 
     if afstand is not None and afstand > 0:
-        debug(f"Afstand: {afstand:.1f} cm")
-
         if afstand < BOTSING_DREMPEL:
             BOTSING_COUNTER += 1
         else:

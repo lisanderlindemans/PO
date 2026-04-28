@@ -41,6 +41,8 @@ def bepaal_richting(huidige, volgende):
 def draai_naar(richting):
     global huidige_richting
 
+    heeft_gedraaid = False
+
     verschil_richting = (richting - huidige_richting) % 4
     
     if verschil_richting == 1:
@@ -78,7 +80,6 @@ def volg_route(route, groenpunten):
 
     for i in range(len(route) - 1):
         wifi_verbinding.wifi_loop()
-
         check_noodstop()
             
         huidige = route[i]
@@ -90,18 +91,17 @@ def volg_route(route, groenpunten):
 
         draai_naar(richting)
 
-        if moet_toren_plaatsen:
+        if huidige in groenpunten:
             debug("Step: Toren plaatsen")
             toren_aan_het_plaatsen = True
-            groenpunten.remove(volgende)
+
             plaats_toren([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
+
+            groenpunten.remove(huidige)
+
             toren_aan_het_plaatsen = False
-            moet_toren_plaatsen = False
 
         rijd_rechtdoor([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
-
-        if volgende in groenpunten:
-            moet_toren_plaatsen = True
         
         if len(groenpunten) == 0:
             terugroute = True

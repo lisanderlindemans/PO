@@ -18,11 +18,13 @@ LDR_L = analogio.AnalogIn(board.GP26)
 LDR_R = analogio.AnalogIn(board.GP27)
 LDR_A = analogio.AnalogIn(board.GP28)
 
-GRENSWAARDE_LDR = (
-    0.28  # LDR-voltage moet BOVEN deze waarde liggen om zwart te detecteren
-)
+GRENSWAARDE_LDR_R = 0.32  # LDR-voltage moet BOVEN deze waarde liggen om zwart te detecteren
+GRENSWAARDE_LDR_L = 0.24
+GRENSWAARDE_LDR_A = 0.32
+
 MOTOR_R_DUTY = 30000
 MOTOR_L_DUTY = 33000
+
 THRESHOLD_AUTOCORRECT = 0.06
 MOTOR_R_FORWARD = True
 MOTOR_L_FORWARD = False
@@ -47,7 +49,7 @@ def draai_rechts(functies: list[Callable] = []):
         for func in functies:
             func()
 
-    while calculate_voltage(LDR_L.value) < GRENSWAARDE_LDR:
+    while calculate_voltage(LDR_L.value) < GRENSWAARDE_LDR_L:
         for func in functies:
             func()
         time.sleep(0.01)
@@ -68,7 +70,7 @@ def draai_links(functies: list[Callable] = []):
         for func in functies:
             func()
 
-    while calculate_voltage(LDR_R.value) < GRENSWAARDE_LDR:
+    while calculate_voltage(LDR_R.value) < GRENSWAARDE_LDR_R:
         for func in functies:
             func()
         time.sleep(0.01)
@@ -82,51 +84,42 @@ def rijd_rechtdoor(functies: list[Callable] = []):
     MOTOR_L_DIR.value = MOTOR_L_FORWARD
     MOTOR_R_DIR.value = MOTOR_R_FORWARD
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
-    MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
+    MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.7)
+
+    def correctie():
+        l = calculate_voltage(LDR_L.value)
+        r = calculate_voltage(LDR_R.value)
+
+        if r - l > THRESHOLD_AUTOCORRECT:
+            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
+            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.8)
+
+        elif l - r > THRESHOLD_AUTOCORRECT:
+            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.8)
+            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
+
+        else:
+            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
+            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.7)
 
     start = time.monotonic()
     while time.monotonic() - start < 1.0:
         for func in functies:
             func()
-
-    while calculate_voltage(LDR_A.value) < GRENSWAARDE_LDR:
-        for func in functies:
-            func()
-        if (
-            calculate_voltage(LDR_R.value) - calculate_voltage(LDR_L.value)
-            > THRESHOLD_AUTOCORRECT
-        ):  # Stuur NAAR rechts bij
-            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.8)
-            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
-        elif (
-            calculate_voltage(LDR_L.value) - calculate_voltage(LDR_R.value)
-            > THRESHOLD_AUTOCORRECT
-        ):  # Stuur NAAR links bij
-            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.8)
-            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
-        else:
-            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
-            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
+        correctie()
         time.sleep(0.01)
-    start = time.monotonic()
-    while time.monotonic() - start < 0.1:
+
+    while calculate_voltage(LDR_A.value) < GRENSWAARDE_LDR_A:
         for func in functies:
             func()
-        if (
-            calculate_voltage(LDR_R.value) - calculate_voltage(LDR_L.value)
-            > THRESHOLD_AUTOCORRECT
-        ):  # Stuur NAAR rechts bij
-            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.8)
-            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
-        elif (
-            calculate_voltage(LDR_L.value) - calculate_voltage(LDR_R.value)
-            > THRESHOLD_AUTOCORRECT
-        ):  # Stuur NAAR links bij
-            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.8)
-            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
-        else:
-            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
-            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
+        correctie()
+        time.sleep(0.01)
+
+    start = time.monotonic()
+    while time.monotonic() - start < 0.2:
+        for func in functies:
+            func()
+        correctie()
         time.sleep(0.01)
 
     MOTOR_L_PWM.duty_cycle = 0
@@ -139,7 +132,7 @@ def plaats_toren(functies: list[Callable] = []):
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
     start = time.monotonic()
-    while time.monotonic() - start < 0.7:
+    while time.monotonic() - start < 0.5:
         for func in functies:
             func()
     MOTOR_L_PWM.duty_cycle = 0
@@ -150,7 +143,7 @@ def plaats_toren(functies: list[Callable] = []):
             func()
     
     old_angle = servo_motor.angle
-    servo_motor.angle += 60
+    servo_motor.angle += 75
     start = time.monotonic()
     wigglestart = start
     # eerste wiggle
@@ -176,7 +169,7 @@ def plaats_toren(functies: list[Callable] = []):
 
 
 def reset_servo(functies: list[Callable] = []):
-    servo_motor.angle = 0
+    servo_motor.angle = 30
     start = time.monotonic()
     while time.monotonic() - start < 2.0:
         for func in functies:
