@@ -36,7 +36,7 @@ def calculate_voltage(value):
     return (value * 3.3) / 65535
 
 
-def draai_rechts(functies: list[Callable] = []):
+def draai_rechts(functies: list = []):
     MOTOR_R_DIR.value = not MOTOR_R_FORWARD
     MOTOR_L_DIR.value = MOTOR_L_FORWARD
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.8)
@@ -57,7 +57,7 @@ def draai_rechts(functies: list[Callable] = []):
     MOTOR_L_DIR.value = MOTOR_L_FORWARD
 
 
-def draai_links(functies: list[Callable] = []):
+def draai_links(functies: list = []):
     MOTOR_L_DIR.value = not MOTOR_L_FORWARD
     MOTOR_R_DIR.value = MOTOR_R_FORWARD
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.8)
@@ -78,7 +78,7 @@ def draai_links(functies: list[Callable] = []):
     MOTOR_R_DIR.value = MOTOR_R_FORWARD
 
 
-def rijd_rechtdoor(functies: list[Callable] = []):
+def rijd_rechtdoor(functies: list = []):
     MOTOR_L_DIR.value = MOTOR_L_FORWARD
     MOTOR_R_DIR.value = MOTOR_R_FORWARD
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
@@ -132,7 +132,7 @@ def rijd_rechtdoor(functies: list[Callable] = []):
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_R_PWM.duty_cycle = 0
 
-def plaats_toren(functies: list[Callable] = []):
+def plaats_toren(functies: list = []):
     # rijd eerst al wat vooruit
     MOTOR_L_DIR.value = MOTOR_L_FORWARD
     MOTOR_R_DIR.value = MOTOR_R_FORWARD
@@ -175,7 +175,7 @@ def plaats_toren(functies: list[Callable] = []):
     time.sleep(0.01)
 
 
-def reset_servo(functies: list[Callable] = []):
+def reset_servo(functies: list = []):
     servo_motor.angle = 0
     start = time.monotonic()
     while time.monotonic() - start < 2.0:

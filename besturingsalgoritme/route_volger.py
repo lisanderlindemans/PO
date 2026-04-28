@@ -93,7 +93,7 @@ def volg_route(route, groenpunten):
         if moet_toren_plaatsen:
             debug("Step: Toren plaatsen")
             toren_aan_het_plaatsen = True
-            groenpunten.remove(volgende)
+            groenpunten.remove(huidige)
             plaats_toren([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
             toren_aan_het_plaatsen = False
             moet_toren_plaatsen = False
