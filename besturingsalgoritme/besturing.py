@@ -26,6 +26,7 @@ MOTOR_R_DUTY = 30000
 MOTOR_L_DUTY = 33000
 
 THRESHOLD_AUTOCORRECT = 0.06
+THRESHOLD_AUTOCORRECT_2 = 0.03
 MOTOR_R_FORWARD = True
 MOTOR_L_FORWARD = False
 
@@ -131,7 +132,7 @@ def rijd_rechtdoor(functies: list[Callable] = []):
     MOTOR_R_PWM.duty_cycle = 0
 
 torens_geplaatst = 0
-def plaats_toren(functies: list[Callable] = []):
+def plaats_toren(rij_tijd, functies: list[Callable] = []):
     global torens_geplaatst
 
     # rijd eerst al wat vooruit
@@ -139,11 +140,28 @@ def plaats_toren(functies: list[Callable] = []):
     MOTOR_R_DIR.value = MOTOR_R_FORWARD
     MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
     MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
+
+    def correctie():
+        l = calculate_voltage(LDR_L.value)
+        r = calculate_voltage(LDR_R.value)
+
+        if r - l > THRESHOLD_AUTOCORRECT_2:
+            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
+            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 0.8)
+
+        elif l - r > THRESHOLD_AUTOCORRECT_2:
+            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 0.8)
+            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.5)
+
+        else:
+            MOTOR_L_PWM.duty_cycle = round(MOTOR_L_DUTY * 1.5)
+            MOTOR_R_PWM.duty_cycle = round(MOTOR_R_DUTY * 1.7)
     
     start = time.monotonic()
-    while time.monotonic() - start < 0.5:
+    while time.monotonic() - start < rij_tijd:
         for func in functies:
             func()
+        correctie()
             
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_R_PWM.duty_cycle = 0
@@ -152,9 +170,18 @@ def plaats_toren(functies: list[Callable] = []):
     while time.monotonic() - start < 0.4:
         for func in functies:
             func()
-    
+    extra = 0
+    if torens_geplaatst == 0:
+        extra = -1
+    elif torens_geplaatst == 1:
+        extra = 0
+    elif torens_geplaatst == 2:
+        extra = -1
+    elif torens_geplaatst == 3:
+        extra = -7
+        
     old_angle = servo_motor.angle
-    target_angle = old_angle + 75 + torens_geplaatst
+    target_angle = old_angle + 75 + extra
     current_angle = old_angle
 
     torens_geplaatst += 1
@@ -167,15 +194,18 @@ def plaats_toren(functies: list[Callable] = []):
         
     servo_motor.angle = target_angle
 
-    time.sleep(0.01)
+    start = time.monotonic()
+    while time.monotonic() - start < 0.4:
+        for func in functies:
+            func()
 
 
 def reset_servo(functies: list[Callable] = []):
-    servo_motor.angle = 53
+    servo_motor.angle = 70
     time.sleep(1)
-    servo_motor.angle = 43
+    servo_motor.angle = 60
     time.sleep(1)
-    servo_motor.angle = 53
+    servo_motor.angle = 70
     
     start = time.monotonic()
     while time.monotonic() - start < 2.0:

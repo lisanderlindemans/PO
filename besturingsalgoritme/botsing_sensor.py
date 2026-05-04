@@ -8,7 +8,7 @@ uart = busio.UART(board.GP0, board.GP1, baudrate=9600)
 sensor = adafruit_us100.US100(uart)
 
 BOTSING_DREMPEL = 8
-BOTSING_MIN_METINGEN = 3
+BOTSING_MIN_METINGEN = 2
 
 BOTSING_COUNTER = 0
 

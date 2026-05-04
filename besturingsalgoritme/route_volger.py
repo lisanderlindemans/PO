@@ -20,6 +20,10 @@ richting_namen = {
 }
 
 huidige_richting = None
+laatste_actie = None
+
+ACTIE_DRAAI = 0.45
+ACTIE_RIJD = 0.35
 
 terugroute = False
 toren_aan_het_plaatsen = False
@@ -48,8 +52,7 @@ def bepaal_richting(huidige, volgende):
     
 def draai_naar(richting):
     global huidige_richting
-
-    heeft_gedraaid = False
+    global laatste_actie
 
     verschil_richting = (richting - huidige_richting) % 4
     
@@ -57,15 +60,18 @@ def draai_naar(richting):
         debug("Step: Draai naar rechts")
 
         draai_rechts([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
+        laatste_actie = ACTIE_DRAAI
     elif verschil_richting == 2:
         debug("Step: keer om")
 
         draai_rechts([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
         draai_rechts([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
+        laatste_actie = ACTIE_DRAAI
     elif verschil_richting == 3:
         debug("Step: Draai naar links")
 
         draai_links([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
+        laatste_actie = ACTIE_DRAAI
     
     huidige_richting = richting
 
@@ -82,6 +88,7 @@ def bepaal_start_richting(route):
 
 def volg_route(route, groenpunten, b):
     global terugroute, toren_aan_het_plaatsen, moet_toren_plaatsen
+    global laatste_actie
 
     if huidige_richting is None:
         bepaal_start_richting(route)
@@ -103,7 +110,7 @@ def volg_route(route, groenpunten, b):
             debug("Step: Toren plaatsen")
             toren_aan_het_plaatsen = True
 
-            #plaats_toren([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
+            plaats_toren(laatste_actie, [LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
 
             groenpunten.remove(huidige)
 
@@ -115,6 +122,7 @@ def volg_route(route, groenpunten, b):
             terugroute = False
 
         rijd_rechtdoor([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
+        laatste_actie = ACTIE_RIJD
 
         if terugroute and huidige == route[-1]:
             reset_motoren()
