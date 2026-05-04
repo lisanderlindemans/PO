@@ -1,7 +1,7 @@
 import time
 import wifi_verbinding
 from wifi_verbinding import debug, check_noodstop
-from besturing import draai_links, draai_rechts, rijd_rechtdoor, plaats_toren
+from besturing import draai_links, draai_rechts, rijd_rechtdoor, plaats_toren, reset_motoren
 from status_led import LED_loop
 from wifi_verbinding import wifi_loop
 from botsing_sensor import check_botsing_sensor
@@ -24,6 +24,14 @@ huidige_richting = None
 terugroute = False
 toren_aan_het_plaatsen = False
 moet_toren_plaatsen = False
+
+def reset_route():
+    global terugroute, toren_aan_het_plaatsen, moet_toren_plaatsen, huidige_richting
+
+    terugroute = False
+    toren_aan_het_plaatsen = False
+    moet_toren_plaatsen = False
+    huidige_richting = None
 
 def bepaal_richting(huidige, volgende):
     verschil_x = volgende[0] - huidige[0]
@@ -72,7 +80,7 @@ def bepaal_start_richting(route):
     huidige_richting = richting
     debug("Start richting ingesteld op: " + richting_namen[richting])
 
-def volg_route(route, groenpunten):
+def volg_route(route, groenpunten, b):
     global terugroute, toren_aan_het_plaatsen, moet_toren_plaatsen
 
     if huidige_richting is None:
@@ -95,17 +103,21 @@ def volg_route(route, groenpunten):
             debug("Step: Toren plaatsen")
             toren_aan_het_plaatsen = True
 
-            plaats_toren([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
+            #plaats_toren([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
 
             groenpunten.remove(huidige)
 
             toren_aan_het_plaatsen = False
 
-        rijd_rechtdoor([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
-        
-        if len(groenpunten) == 0:
+        if len(groenpunten) == 0 and b:
             terugroute = True
         else:
             terugroute = False
+
+        rijd_rechtdoor([LED_loop, wifi_loop, check_noodstop, check_botsing_sensor])
+
+        if terugroute and huidige == route[-1]:
+            reset_motoren()
+            return
         
         time.sleep(0.1)

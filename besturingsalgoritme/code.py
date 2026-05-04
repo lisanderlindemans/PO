@@ -1,7 +1,7 @@
 import time
 import wifi_verbinding
 from wifi_verbinding import debug
-from route_volger import volg_route
+from route_volger import volg_route, reset_route
 from manueel_besturing import manueel_loop
 
 wifi_verbinding.start_wifi()
@@ -33,9 +33,15 @@ while True:
             if punt not in terugroute:
                 heen_groen.append(punt)
 
-        terug_groen = groenpunten.copy()
+        terug_groen = []
+        for punt in groenpunten:
+            if punt in terugroute:
+                terug_groen.append(punt)
             
-        volg_route(heenroute, heen_groen)
-        volg_route(terugroute, terug_groen)
+        volg_route(heenroute, heen_groen, False)
+        volg_route(terugroute, terug_groen, True)
+
+        wifi_verbinding.route_data = None
+        reset_route()
 
     time.sleep(0.01)
