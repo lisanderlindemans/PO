@@ -22,8 +22,8 @@ richting_namen = {
 huidige_richting = None
 laatste_actie = None
 
-ACTIE_DRAAI = 0.6
-ACTIE_RIJD = 0.4
+ACTIE_DRAAI = 0.5
+ACTIE_RIJD = 0.375
 
 terugroute = False
 toren_aan_het_plaatsen = False

@@ -176,9 +176,9 @@ def plaats_toren(rij_tijd, functies: list[Callable] = []):
             func()
     extra = 0
     if torens_geplaatst == 0:
-        extra = -1
-    elif torens_geplaatst == 1:
         extra = 0
+    elif torens_geplaatst == 1:
+        extra = -1
     elif torens_geplaatst == 2:
         extra = -1
     elif torens_geplaatst == 3:
