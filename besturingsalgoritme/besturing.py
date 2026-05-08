@@ -25,7 +25,7 @@ GRENSWAARDE_LDR_A = 0.32
 MOTOR_R_DUTY = 30000
 MOTOR_L_DUTY = 33000
 
-THRESHOLD_AUTOCORRECT = 0.06
+THRESHOLD_AUTOCORRECT = 0.03
 THRESHOLD_AUTOCORRECT_2 = 0.03
 MOTOR_R_FORWARD = True
 MOTOR_L_FORWARD = False
@@ -188,11 +188,11 @@ def plaats_toren(rij_tijd, functies: list[Callable] = []):
     
     while current_angle < target_angle:
         current_angle += 2
-        servo_motor.angle = current_angle
+        servo_motor.angle = max(0, min(current_angle, 360))
 
         time.sleep(0.02)
         
-    servo_motor.angle = target_angle
+    servo_motor.angle = max(0, min(target_angle, 360))
 
     start = time.monotonic()
     while time.monotonic() - start < 0.4:

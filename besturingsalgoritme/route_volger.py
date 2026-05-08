@@ -22,7 +22,7 @@ richting_namen = {
 huidige_richting = None
 laatste_actie = None
 
-ACTIE_DRAAI = 0.45
+ACTIE_DRAAI = 0.5
 ACTIE_RIJD = 0.35
 
 terugroute = False
