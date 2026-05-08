@@ -55,15 +55,19 @@ def draai_rechts(functies: list[Callable] = []):
         for func in functies:
             func()
 
-    while calculate_voltage(LDR_L.value) < GRENSWAARDE_LDR_L:
+    while calculate_voltage(LDR_R.value) < GRENSWAARDE_LDR_R:
         for func in functies:
             func()
         time.sleep(0.01)
+    start = time.monotonic()
+    while time.monotonic() - start < 0.05:
+        for func in functies:
+            func()
+    
     MOTOR_R_PWM.duty_cycle = 0
     MOTOR_L_PWM.duty_cycle = 0
     MOTOR_R_DIR.value = MOTOR_R_FORWARD
     MOTOR_L_DIR.value = MOTOR_L_FORWARD
-
 
 def draai_links(functies: list[Callable] = []):
     MOTOR_L_DIR.value = not MOTOR_L_FORWARD
@@ -189,11 +193,10 @@ def plaats_toren(rij_tijd, functies: list[Callable] = []):
     while current_angle < target_angle:
         current_angle += 2
         servo_motor.angle = max(0, min(current_angle, 360))
-
         time.sleep(0.02)
         
     servo_motor.angle = max(0, min(target_angle, 360))
-
+    
     start = time.monotonic()
     while time.monotonic() - start < 0.4:
         for func in functies:
